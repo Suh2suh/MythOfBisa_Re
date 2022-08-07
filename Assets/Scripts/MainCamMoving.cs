@@ -17,6 +17,12 @@ public class MainCamMoving : MonoBehaviour
     bool isTopViewMode;
 
 
+    public void OnOffTopViewMode()
+	{
+        isTopViewMode = !isTopViewMode;
+    }
+
+
     void Update()
     {
         ConvertCamera();
