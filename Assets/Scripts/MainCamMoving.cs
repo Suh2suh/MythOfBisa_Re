@@ -14,7 +14,7 @@ public class MainCamMoving : MonoBehaviour
     float lerpPercent = 0f;
 
     [SerializeField]
-    bool isTopViewMode;
+    public bool isTopViewMode;
 
 
     public void OnOffTopViewMode()

@@ -1,9 +1,19 @@
 fileFormatVersion: 2
-guid: 1e03d67c666838349a8aed6fe3e18fd1
+guid: b0a0c9b707e1d0f4fbe10decb6d10527
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Building Roof
+    second: {fileID: 2100000, guid: 10d25415539904f4b82fe9aa08d5ca90, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Window
+    second: {fileID: 2100000, guid: f409c3bdca7241e489e9e0fcd1bd2d24, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
