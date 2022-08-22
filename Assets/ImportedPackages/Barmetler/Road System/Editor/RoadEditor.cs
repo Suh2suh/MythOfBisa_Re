@@ -52,6 +52,7 @@ namespace Barmetler.RoadSystem
 			RoadLinkTool.Select(road, selectedAnchorPoint <= road.NumSegments / 2);
 		}
 
+		[Obsolete]
 		private void OnSceneGUI()
 		{
 			if (Event.current.type == EventType.MouseDown && Event.current.button == 1)
@@ -654,6 +655,7 @@ namespace Barmetler.RoadSystem
 
 		static Rect windowRect = new Rect(10000, 10000, 300, 300);
 
+		[Obsolete]
 		void GUIDrawWindow()
 		{
 			// only enable when a point can be selected

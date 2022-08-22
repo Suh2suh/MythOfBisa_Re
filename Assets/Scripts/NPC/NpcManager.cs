@@ -73,17 +73,49 @@ public class NpcManager : MonoBehaviour
 
 
 	// CurrentActivePos[CurrentActivePos.Count - 1].questNum != GameData.QuestNum -> 거리 체크 후 멀어지면 Npc 제거
+	//turon on screen touch if the distance is close enough
 	IEnumerator GetDofPlayerVNpc()
 	{
-		float distance;
-		Vector3 NpcPos = CurrentActivePos[0].GetSpawnPos();
+		//제일 최근에 생성된 npc의 퀘스트넘버가 현재 퀘스트넘버와 일치한다면
 
-		do
+		if(CurrentActivePos[CurrentActivePos.Count - 1].questNum == GameData.questNum)
 		{
-			distance = Vector3.Distance(playerPos.position, NpcPos);
+			float distance;
+			Vector3 NpcPos = CurrentActivePos[CurrentActivePos.Count - 1].GetSpawnPos();
 
-			yield return new WaitForSecondsRealtime(1.0f);
-		} while (distance > minDistance);
+			do
+			{
+				distance = Vector3.Distance(playerPos.position, NpcPos);
+
+				yield return new WaitForSecondsRealtime(1.0f);
+			} while (distance > minDistance);
+
+			//충분히 가까워지면
+			TouchOnScreen.isTouchDetectNeeded = true;
+		}
+	}
+
+	IEnumerator GetDofPlayervOtherNpc()
+	{
+		if(CurrentActivePos.Count > 1)
+		{
+			float distance;
+			Vector3 NpcPos;
+
+			do
+			{
+				for(int i = 0; i <= CurrentActivePos.Count - 2; i++)
+				{
+					NpcPos = CurrentActivePos[i].GetSpawnPos();
+					distance = Vector3.Distance(playerPos.position, NpcPos);
+
+					if (distance < minDistance)
+						CurrentActivePos[i].DeleteNpc();
+				}
+
+				yield return new WaitForSecondsRealtime(1.0f);
+			} while (CurrentActivePos.Count < 2);
+		}
 	}
 
 	//when Npc Clicked, make bool false

@@ -46,14 +46,21 @@ public class TouchOnScreen : MonoBehaviour
 
 
                     //if Layer is "MapPin"
-                    if (Physics.Raycast(ray, out hit) && hit.transform.gameObject.layer == 6)
+                    if (Physics.Raycast(ray, out hit))
                     {
-                        MapDescriptionShower.BuildingName = hit.transform.parent.name;
+                        if(hit.transform.gameObject.layer == 6)
+						{
+                            MapDescriptionShower.BuildingName = hit.transform.parent.name;
 
-                        if(MapDescriptionShower.StartIndex > -1)
-                            guiManager.MapStage = 3;
+                            if (MapDescriptionShower.BuildingStartIndex > -1)
+                                guiManager.MapStage = 3;
 
-                        MapDescriptionShower.StartIndex = -1;
+                            MapDescriptionShower.BuildingStartIndex = -1;
+                        }
+                        else if(hit.transform.gameObject.layer == 7)
+						{
+                            Debug.Log("Npc");
+						}
                     }
                 }
             }

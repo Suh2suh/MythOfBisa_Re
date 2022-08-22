@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
-	public static int questNum = 2;
+	public static int questNum = 5;
 
 	public static int totalQuest = 8;
 }
