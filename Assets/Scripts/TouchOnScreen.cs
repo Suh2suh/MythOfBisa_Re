@@ -37,7 +37,7 @@ public class TouchOnScreen : MonoBehaviour
             */
 
             #region PCTouch
-            if(guiManager.MapStage != 3)
+            if(guiManager.MapState != GUIManager.MapUIState.InfoPanelOn)
 			{
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -53,14 +53,16 @@ public class TouchOnScreen : MonoBehaviour
                             MapDescriptionShower.BuildingName = hit.transform.parent.name;
 
                             if (MapDescriptionShower.BuildingStartIndex > -1)
-                                guiManager.MapStage = 3;
+                                guiManager.MapState = GUIManager.MapUIState.InfoPanelOn;
 
                             MapDescriptionShower.BuildingStartIndex = -1;
                         }
                         else if(hit.transform.gameObject.layer == 7)
 						{
-                            Debug.Log("Npc");
-						}
+                            NpcSpawner ns = hit.transform.parent.gameObject.GetComponent<NpcSpawner>();
+                            ns.CheckClickAndConversationOn();
+                            //npc.conversationer -> openConversation()
+                        }
                     }
                 }
             }

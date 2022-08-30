@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class NpcSpawner : MonoBehaviour
 {
+	#region Initialization
+
 	public int questNum;
     public List<GameObject> NpcList;
 
@@ -14,8 +16,13 @@ public class NpcSpawner : MonoBehaviour
 		spawnPos = transform.position;
 	}
 
+	#endregion
+
+	#region Spawn/Delete Npc
 	public Vector3 GetSpawnPos()
 	{
+		spawnPos = transform.position;
+
 		return spawnPos;
 	}
 
@@ -36,4 +43,41 @@ public class NpcSpawner : MonoBehaviour
 			transform.GetChild(i).gameObject.SetActive(false);
 		}
 	}
+	#endregion
+
+	#region Npc: ClickCheck / ActiveConversation
+
+
+	bool isClicked = false;
+
+	Outline outliner;
+
+	public void CheckClickAndConversationOn()
+	{
+		if(!isClicked)
+		{
+			isClicked = true;
+
+			for (int i = 0; i < NpcList.Count; i++)
+			{
+				outliner = transform.GetChild(i).gameObject.GetComponent<Outline>();
+				outliner.OutlineMode = Outline.Mode.OutlineVisible;
+			}
+		}
+		else
+		{
+			Debug.Log(questNum + "번 퀘스트 대화 시작");
+			outliner.OutlineMode = Outline.Mode.OutlineHidden;
+			//npc quest number pass
+			//대화 시작
+		}
+	}
+
+	void ProcessConversationEnd()
+	{
+
+	}
+
+
+	#endregion
 }

@@ -6,7 +6,7 @@ public class NpcManager : MonoBehaviour
 {
 	#region Initialization
 
-	Transform playerPos;
+	public Transform playerPos;
 
 	List<NpcSpawner> NpcSpawnPoses;
 	List<NpcSpawner> CurrentActivePos;
@@ -41,7 +41,7 @@ public class NpcManager : MonoBehaviour
 		NpcSpawnPoses = new List<NpcSpawner>();
 		CurrentActivePos = new List<NpcSpawner>();
 
-		for (int i = 0; i < transform.childCount-1; i++)
+		for (int i = 0; i < transform.childCount; i++)
 		{
 			NpcSpawner ns = transform.GetChild(i).gameObject.GetComponent<NpcSpawner>();
 			NpcSpawnPoses.Add(ns);
@@ -58,18 +58,36 @@ public class NpcManager : MonoBehaviour
 
 	void FindRightSpawnPosNActiveNpc()
 	{
-		foreach (NpcSpawner ns in NpcSpawnPoses)
+		if (GameData.questNum != 0)
 		{
-			if (ns.questNum == GameData.questNum)
+			foreach (NpcSpawner ns in NpcSpawnPoses)
 			{
-				CurrentActivePos.Add(ns);
+				if (ns.questNum == GameData.questNum)
+				{
+					CurrentActivePos.Add(ns);
+				}
 			}
-		}
 
-		//Count - 1 => 이미 활성화된 Npc가 있을 수 있기 때문에, 새롭게 들어갈 Npc만 스폰
-		if(CurrentActivePos.Count > 0)
-			CurrentActivePos[CurrentActivePos.Count-1].SpawnNpc();
+			//Count - 1 => 이미 활성화된 Npc가 있을 수 있기 때문에, 새롭게 들어갈 Npc만 스폰
+			if (CurrentActivePos.Count > 0)
+				CurrentActivePos[CurrentActivePos.Count - 1].SpawnNpc();
+		}
+		else
+		{
+			SpawnNpcNearPlayer();
+		}
 	}
+
+	void SpawnNpcNearPlayer()
+	{
+		NpcSpawner nearNpcPos = NpcSpawnPoses[NpcSpawnPoses.Count-1];
+
+		Vector3 nearPlayerPos = playerPos.position + playerPos.forward * 10;
+		nearNpcPos.transform.position = new Vector3(nearPlayerPos.x, nearNpcPos.transform.position.y, nearPlayerPos.z);
+
+		nearNpcPos.SpawnNpc();
+	}
+
 
 
 	// CurrentActivePos[CurrentActivePos.Count - 1].questNum != GameData.QuestNum -> 거리 체크 후 멀어지면 Npc 제거

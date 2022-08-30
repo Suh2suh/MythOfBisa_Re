@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class ShowMapDescription : MonoBehaviour
 {
@@ -93,6 +94,7 @@ public class ShowMapDescription : MonoBehaviour
 	public TextMeshProUGUI descriptionTitle;
 
 	public GameObject descriptionContent;
+
 	public GameObject MapFloorSection; // FloorText, ToiletImage
 	public GameObject MapRoomText;
 	public GameObject MapFloorDivider;
@@ -109,8 +111,8 @@ public class ShowMapDescription : MonoBehaviour
 		//Change Building Title
 		descriptionTitle.text = kor_Description[buildingStartIndex]["Name"].ToString();
 
-		Vector3 contentPos = descriptionContent.transform.position;
-		Quaternion contentRot = descriptionContent.transform.rotation;
+		//Vector3 contentPos = descriptionContent.transform.position;
+		//Quaternion contentRot = descriptionContent.transform.rotation;
 
 		for (int index = buildingStartIndex; index <= buildingEndIndex; index++)
 		{
@@ -160,5 +162,8 @@ public class ShowMapDescription : MonoBehaviour
 
 		ContentChilds.Clear();
 		floorSection = null;
+
+		//initalize scroll
+		descriptionContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 	}
 }
