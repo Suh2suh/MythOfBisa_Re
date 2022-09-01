@@ -763,6 +763,7 @@ GameObject:
   - component: {fileID: 5427950125595654480}
   - component: {fileID: 5537539250873160431}
   - component: {fileID: 5345604354175091403}
+  - component: {fileID: 5734014950249941485}
   m_Layer: 7
   m_Name: Idle_Smith
   m_TagString: Untagged
@@ -831,6 +832,19 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!65 &5734014950249941485
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4618480235449033706}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.08, y: 0.108484246, z: 0.08}
+  m_Center: {x: 0, y: 0.05962262, z: 0}
 --- !u!1 &4902345931633752787
 GameObject:
   m_ObjectHideFlags: 0

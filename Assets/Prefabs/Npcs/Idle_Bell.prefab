@@ -315,6 +315,7 @@ GameObject:
   - component: {fileID: 2288156428888973350}
   - component: {fileID: 1750654900174098903}
   - component: {fileID: -5342154733957806935}
+  - component: {fileID: 4904652688045222206}
   m_Layer: 7
   m_Name: Idle_Bell
   m_TagString: Untagged
@@ -382,6 +383,19 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!65 &4904652688045222206
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1480270900384529052}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.07084441, y: 0.14339913, z: 0.077063024}
+  m_Center: {x: 0, y: 0.07428908, z: 0}
 --- !u!1 &1558611875117994022
 GameObject:
   m_ObjectHideFlags: 0

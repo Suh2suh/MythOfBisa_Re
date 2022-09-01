@@ -1464,6 +1464,7 @@ GameObject:
   - component: {fileID: 8792948520722158512}
   - component: {fileID: 9046726056277925996}
   - component: {fileID: -7371524111519974730}
+  - component: {fileID: 213915536947335431}
   m_Layer: 7
   m_Name: (E)Idle_Mitty
   m_TagString: Untagged
@@ -1532,6 +1533,19 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!65 &213915536947335431
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8164186901423622410}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.08, y: 0.16, z: 0.08}
+  m_Center: {x: 0, y: 0.08, z: 0}
 --- !u!1 &8312234705318265347
 GameObject:
   m_ObjectHideFlags: 0

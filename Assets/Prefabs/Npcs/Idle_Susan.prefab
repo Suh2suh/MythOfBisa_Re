@@ -1428,6 +1428,7 @@ GameObject:
   - component: {fileID: 8376583466699833846}
   - component: {fileID: 8337608996013695271}
   - component: {fileID: 1757141684503560124}
+  - component: {fileID: 8456656800374205016}
   m_Layer: 7
   m_Name: Idle_Susan
   m_TagString: Untagged
@@ -1495,3 +1496,16 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!65 &8456656800374205016
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9184047886294162252}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.08, y: 0.11940687, z: 0.08}
+  m_Center: {x: 0, y: 0.07638381, z: 0}

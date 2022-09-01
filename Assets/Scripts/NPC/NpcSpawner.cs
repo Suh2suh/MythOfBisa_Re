@@ -10,6 +10,53 @@ public class NpcSpawner : MonoBehaviour
     public List<GameObject> NpcList;
 
 	Vector3 spawnPos;
+	public Vector3 SpawnPos
+	{
+		get
+		{
+			return spawnPos;
+		}
+		set
+		{
+			spawnPos = value;
+		}
+	}
+
+	bool isTouchable = false;
+
+	// Make Npc Untouchable when the conversation is over
+	public bool IsTouchable
+	{
+		get
+		{
+			return isTouchable;
+		}
+		set
+		{
+			isTouchable = value;
+			Debug.Log(transform.name + " Touchable: " + isTouchable);
+
+			if(isTouchable)
+			{
+				TouchOnScreen.isTouchDetectNeeded = true;
+
+				for (int i = 0; i < NpcList.Count; i++)
+				{
+					NpcList[0].tag = "Touchable";
+				}
+			}
+			else
+			{
+				TouchOnScreen.isTouchDetectNeeded = false;
+
+				for (int i = 0; i < NpcList.Count; i++)
+				{
+					NpcList[0].tag = "Untouchable";
+				}
+			}
+		}
+	}
+
 
 	private void Awake()
 	{
@@ -18,13 +65,8 @@ public class NpcSpawner : MonoBehaviour
 
 	#endregion
 
-	#region Spawn/Delete Npc
-	public Vector3 GetSpawnPos()
-	{
-		spawnPos = transform.position;
 
-		return spawnPos;
-	}
+	#region Spawn/Delete Npc
 
 	public void SpawnNpc()
 	{
@@ -32,7 +74,7 @@ public class NpcSpawner : MonoBehaviour
 
 		foreach(GameObject npc in NpcList)
 		{
-			Instantiate(npc, transform.position, transform.rotation, transform);
+			Instantiate(npc, spawnPos, transform.rotation, transform);
 		}
 	}
 
@@ -66,10 +108,16 @@ public class NpcSpawner : MonoBehaviour
 		}
 		else
 		{
+			IsTouchable = false;
+
 			Debug.Log(questNum + "번 퀘스트 대화 시작");
 			outliner.OutlineMode = Outline.Mode.OutlineHidden;
 			//npc quest number pass
-			//대화 시작
+			//대화 시작, 대화 끝나면 questnum ++;
+
+			//<Test>
+			GameData.questNum++;
+			transform.parent.GetComponent<NpcManager>().FindRightSpawnPosNActiveNpc();
 		}
 	}
 

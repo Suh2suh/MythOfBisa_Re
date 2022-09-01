@@ -4,14 +4,22 @@ using UnityEngine;
 
 public class NpcManager : MonoBehaviour
 {
+	//GameData 퀘스트 번호 변경됨 -> 새로운 퀘스트 인식
+	//새로운 퀘스트 -> npc 서서히 사라짐
+
 	#region Initialization
+
 
 	public Transform playerPos;
 
 	List<NpcSpawner> NpcSpawnPoses;
 	List<NpcSpawner> CurrentActivePos;
 
-	float minDistance = 50.0f;
+
+	[SerializeField]
+	float minDistance = 20.0f;
+	[SerializeField]
+	float maxDistance = 100.0f;
 
 
 	bool isNpcActivated;
@@ -27,13 +35,13 @@ public class NpcManager : MonoBehaviour
 
 			if(isNpcActivated)
 			{
-				StartCoroutine("GetDofPlayerVNpc");
+				StartCoroutine("GetDofPlayerVUsingNpc");
+
+				if (CurrentActivePos.Count > 1)
+					StartCoroutine("GetDofPlayervUselessNpc");
 			}
 		}
 	}
-
-	//GameData 퀘스트 번호 변경됨 -> 새로운 퀘스트 인식
-	//새로운 퀘스트 -> npc 서서히 사라짐
 
 
 	private void Awake()
@@ -47,35 +55,39 @@ public class NpcManager : MonoBehaviour
 			NpcSpawnPoses.Add(ns);
 		}
     }
+
+
 	#endregion
 
-	//Find Quest Position when Start at first
+
+	#region Spawn Npc  
+
+
 	void Start()
     {
 		FindRightSpawnPosNActiveNpc();
 	}
 
 
-	void FindRightSpawnPosNActiveNpc()
+	public void FindRightSpawnPosNActiveNpc()
 	{
-		if (GameData.questNum != 0)
+		foreach (NpcSpawner ns in NpcSpawnPoses)
 		{
-			foreach (NpcSpawner ns in NpcSpawnPoses)
+			if (ns.questNum == GameData.questNum)
 			{
-				if (ns.questNum == GameData.questNum)
-				{
-					CurrentActivePos.Add(ns);
-				}
+				CurrentActivePos.Add(ns);
 			}
+		}
 
-			//Count - 1 => 이미 활성화된 Npc가 있을 수 있기 때문에, 새롭게 들어갈 Npc만 스폰
-			if (CurrentActivePos.Count > 0)
-				CurrentActivePos[CurrentActivePos.Count - 1].SpawnNpc();
-		}
+		//Count - 1 => 이미 활성화된 Npc가 있을 수 있기 때문에, 새롭게 들어갈 Npc만 스폰
+		if(GameData.questNum != 0)
+			CurrentActivePos[CurrentActivePos.Count - 1].SpawnNpc();
 		else
-		{
 			SpawnNpcNearPlayer();
-		}
+
+
+		if (!IsNpcActivated)
+			IsNpcActivated = true;
 	}
 
 	void SpawnNpcNearPlayer()
@@ -83,60 +95,70 @@ public class NpcManager : MonoBehaviour
 		NpcSpawner nearNpcPos = NpcSpawnPoses[NpcSpawnPoses.Count-1];
 
 		Vector3 nearPlayerPos = playerPos.position + playerPos.forward * 10;
-		nearNpcPos.transform.position = new Vector3(nearPlayerPos.x, nearNpcPos.transform.position.y, nearPlayerPos.z);
+		nearNpcPos.SpawnPos = new Vector3(nearPlayerPos.x, nearNpcPos.transform.position.y, nearPlayerPos.z);
 
 		nearNpcPos.SpawnNpc();
 	}
 
 
+	#endregion
 
-	// CurrentActivePos[CurrentActivePos.Count - 1].questNum != GameData.QuestNum -> 거리 체크 후 멀어지면 Npc 제거
-	//turon on screen touch if the distance is close enough
-	IEnumerator GetDofPlayerVNpc()
+
+	#region Check Distance of Npc and Player : Enable Touch & Delete Npc
+
+
+	NpcSpawner recentActivePos;
+
+	IEnumerator GetDofPlayerVUsingNpc()
 	{
-		//제일 최근에 생성된 npc의 퀘스트넘버가 현재 퀘스트넘버와 일치한다면
+		recentActivePos = CurrentActivePos[CurrentActivePos.Count - 1];
 
-		if(CurrentActivePos[CurrentActivePos.Count - 1].questNum == GameData.questNum)
+		float distance;
+		Vector3 NpcPos = CurrentActivePos[CurrentActivePos.Count - 1].SpawnPos;
+
+		do
 		{
-			float distance;
-			Vector3 NpcPos = CurrentActivePos[CurrentActivePos.Count - 1].GetSpawnPos();
+			distance = Vector3.Distance(playerPos.position, NpcPos);
 
-			do
-			{
-				distance = Vector3.Distance(playerPos.position, NpcPos);
+			if (distance < minDistance)
+				recentActivePos.IsTouchable = true;
+			else if (distance > minDistance)
+				recentActivePos.IsTouchable = false;
 
-				yield return new WaitForSecondsRealtime(1.0f);
-			} while (distance > minDistance);
 
-			//충분히 가까워지면
-			TouchOnScreen.isTouchDetectNeeded = true;
-		}
+			Debug.Log(distance);
+
+			yield return new WaitForSecondsRealtime(1.0f);
+
+		} while (recentActivePos.questNum == GameData.questNum);
 	}
 
-	IEnumerator GetDofPlayervOtherNpc()
+
+	IEnumerator GetDofPlayervUselessNpc()
 	{
-		if(CurrentActivePos.Count > 1)
+		float distance;
+		Vector3 NpcPos;
+
+		do
 		{
-			float distance;
-			Vector3 NpcPos;
-
-			do
+			for (int i = 0; i <= CurrentActivePos.Count - 2; i++)
 			{
-				for(int i = 0; i <= CurrentActivePos.Count - 2; i++)
+				NpcPos = CurrentActivePos[i].SpawnPos;
+				distance = Vector3.Distance(playerPos.position, NpcPos);
+
+				if (distance > maxDistance)
 				{
-					NpcPos = CurrentActivePos[i].GetSpawnPos();
-					distance = Vector3.Distance(playerPos.position, NpcPos);
-
-					if (distance < minDistance)
-						CurrentActivePos[i].DeleteNpc();
+					CurrentActivePos[i].DeleteNpc();
+					CurrentActivePos.RemoveAt(i);
 				}
+			}
 
-				yield return new WaitForSecondsRealtime(1.0f);
-			} while (CurrentActivePos.Count < 2);
-		}
+			yield return new WaitForSecondsRealtime(1.0f);
+		} while (CurrentActivePos.Count < 2);
 	}
 
 	//when Npc Clicked, make bool false
 
+	#endregion
 
 }

@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 1853722832257523800}
   - component: {fileID: 2176090077120219062}
   - component: {fileID: 2855588572833045600}
+  - component: {fileID: 3207010834577684944}
   m_Layer: 7
   m_Name: Idle_Demon
   m_TagString: Untagged
@@ -174,6 +175,19 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!65 &3207010834577684944
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365276458784520930}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.08, y: 0.13127926, z: 0.08}
+  m_Center: {x: 0, y: 0.06436037, z: 0}
 --- !u!1 &1649141409792107483
 GameObject:
   m_ObjectHideFlags: 0
