@@ -7,6 +7,7 @@ public class NpcSpawner : MonoBehaviour
 	#region Initialization
 
 	public int questNum;
+
     public List<GameObject> NpcList;
 
 	Vector3 spawnPos;
@@ -37,23 +38,9 @@ public class NpcSpawner : MonoBehaviour
 			Debug.Log(transform.name + " Touchable: " + isTouchable);
 
 			if(isTouchable)
-			{
 				TouchOnScreen.isTouchDetectNeeded = true;
-
-				for (int i = 0; i < NpcList.Count; i++)
-				{
-					NpcList[0].tag = "Touchable";
-				}
-			}
 			else
-			{
 				TouchOnScreen.isTouchDetectNeeded = false;
-
-				for (int i = 0; i < NpcList.Count; i++)
-				{
-					NpcList[0].tag = "Untouchable";
-				}
-			}
 		}
 	}
 
@@ -87,11 +74,11 @@ public class NpcSpawner : MonoBehaviour
 	}
 	#endregion
 
+
 	#region Npc: ClickCheck / ActiveConversation
 
 
-	bool isClicked = false;
-
+	public bool isClicked = false;
 	Outline outliner;
 
 	public void CheckClickAndConversationOn()
@@ -115,8 +102,10 @@ public class NpcSpawner : MonoBehaviour
 			//npc quest number pass
 			//대화 시작, 대화 끝나면 questnum ++;
 
+
 			//<Test>
-			GameData.questNum++;
+			DataManager.Instance.plusPlayerQuestNum();
+			transform.parent.GetComponent<NpcManager>().IsNpcActivated = false;
 			transform.parent.GetComponent<NpcManager>().FindRightSpawnPosNActiveNpc();
 		}
 	}

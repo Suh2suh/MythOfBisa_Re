@@ -53,6 +53,8 @@ public class NpcManager : MonoBehaviour
 		{
 			NpcSpawner ns = transform.GetChild(i).gameObject.GetComponent<NpcSpawner>();
 			NpcSpawnPoses.Add(ns);
+
+			Debug.Log(ns);
 		}
     }
 
@@ -73,14 +75,14 @@ public class NpcManager : MonoBehaviour
 	{
 		foreach (NpcSpawner ns in NpcSpawnPoses)
 		{
-			if (ns.questNum == GameData.questNum)
+			if (ns.questNum == DataManager.Instance.questNum)
 			{
 				CurrentActivePos.Add(ns);
 			}
 		}
 
 		//Count - 1 => 이미 활성화된 Npc가 있을 수 있기 때문에, 새롭게 들어갈 Npc만 스폰
-		if(GameData.questNum != 0)
+		if(DataManager.Instance.questNum != 0)
 			CurrentActivePos[CurrentActivePos.Count - 1].SpawnNpc();
 		else
 			SpawnNpcNearPlayer();
@@ -126,11 +128,9 @@ public class NpcManager : MonoBehaviour
 				recentActivePos.IsTouchable = false;
 
 
-			Debug.Log(distance);
-
 			yield return new WaitForSecondsRealtime(1.0f);
 
-		} while (recentActivePos.questNum == GameData.questNum);
+		} while (!recentActivePos.isClicked);
 	}
 
 

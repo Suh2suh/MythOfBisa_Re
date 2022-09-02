@@ -59,12 +59,15 @@ public class TouchOnScreen : MonoBehaviour
 
                             MapDescriptionShower.BuildingStartIndex = -1;
                         }
-                        else if(hit.transform.gameObject.layer == 7 && hit.transform.gameObject.tag == "Touchable")
+                        else if(hit.transform.gameObject.layer == 7)
 						{
-                            Debug.Log(hit.transform.gameObject);
                             NpcSpawner ns = hit.transform.parent.gameObject.GetComponent<NpcSpawner>();
-                            ns.CheckClickAndConversationOn();
-                            //npc.conversationer -> openConversation()
+
+                            if(ns.IsTouchable)
+							{
+                                //Debug.Log(hit.transform.gameObject);
+                                ns.CheckClickAndConversationOn();
+                            }
                         }
                     }
                 }
