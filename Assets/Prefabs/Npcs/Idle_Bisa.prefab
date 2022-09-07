@@ -1537,6 +1537,7 @@ GameObject:
   - component: {fileID: 8238683700151644803}
   - component: {fileID: -7382340686844452}
   - component: {fileID: 1127600866044735104}
+  - component: {fileID: 5270912576760482714}
   m_Layer: 7
   m_Name: Idle_Bisa
   m_TagString: Untouchable
@@ -1618,3 +1619,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.08, y: 0.117838874, z: 0.08}
   m_Center: {x: 0, y: 0.060275476, z: 0}
+--- !u!114 &5270912576760482714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9121133936487261535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09737c6ef8d0bf548b362036df214768, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isClicked: 0

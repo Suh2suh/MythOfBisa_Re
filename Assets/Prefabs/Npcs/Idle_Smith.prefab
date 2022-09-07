@@ -764,6 +764,7 @@ GameObject:
   - component: {fileID: 5537539250873160431}
   - component: {fileID: 5345604354175091403}
   - component: {fileID: 5734014950249941485}
+  - component: {fileID: -3809718176540011339}
   m_Layer: 7
   m_Name: Idle_Smith
   m_TagString: Untagged
@@ -845,6 +846,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.08, y: 0.108484246, z: 0.08}
   m_Center: {x: 0, y: 0.05962262, z: 0}
+--- !u!114 &-3809718176540011339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4618480235449033706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09737c6ef8d0bf548b362036df214768, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isClicked: 0
 --- !u!1 &4902345931633752787
 GameObject:
   m_ObjectHideFlags: 0

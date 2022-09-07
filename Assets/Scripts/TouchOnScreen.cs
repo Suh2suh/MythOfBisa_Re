@@ -61,12 +61,12 @@ public class TouchOnScreen : MonoBehaviour
                         }
                         else if(hit.transform.gameObject.layer == 7)
 						{
-                            NpcSpawner ns = hit.transform.parent.gameObject.GetComponent<NpcSpawner>();
+                            Npc npc = hit.transform.GetComponent<Npc>();
 
-                            if(ns.IsTouchable)
+                            if(npc.IsTouchable)
 							{
                                 //Debug.Log(hit.transform.gameObject);
-                                ns.CheckClickAndConversationOn();
+                                npc.CheckClickAndConversationOn();
                             }
                         }
                     }

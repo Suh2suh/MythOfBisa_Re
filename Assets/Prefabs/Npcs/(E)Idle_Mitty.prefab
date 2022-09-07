@@ -1465,6 +1465,7 @@ GameObject:
   - component: {fileID: 9046726056277925996}
   - component: {fileID: -7371524111519974730}
   - component: {fileID: 213915536947335431}
+  - component: {fileID: -3794622436575224612}
   m_Layer: 7
   m_Name: (E)Idle_Mitty
   m_TagString: Untagged
@@ -1546,6 +1547,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.08, y: 0.16, z: 0.08}
   m_Center: {x: 0, y: 0.08, z: 0}
+--- !u!114 &-3794622436575224612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8164186901423622410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09737c6ef8d0bf548b362036df214768, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isClicked: 0
 --- !u!1 &8312234705318265347
 GameObject:
   m_ObjectHideFlags: 0

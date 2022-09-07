@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 2176090077120219062}
   - component: {fileID: 2855588572833045600}
   - component: {fileID: 3207010834577684944}
+  - component: {fileID: 5618780817071341894}
   m_Layer: 7
   m_Name: Idle_Demon
   m_TagString: Untagged
@@ -188,6 +189,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.08, y: 0.13127926, z: 0.08}
   m_Center: {x: 0, y: 0.06436037, z: 0}
+--- !u!114 &5618780817071341894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365276458784520930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09737c6ef8d0bf548b362036df214768, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isClicked: 0
 --- !u!1 &1649141409792107483
 GameObject:
   m_ObjectHideFlags: 0

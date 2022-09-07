@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,54 +10,76 @@ public class NpcManager : MonoBehaviour
 
 	#region Initialization
 
+		#region Dictionary
 
-	public Transform playerPos;
+		[UDictionary.Split(35, 65)]
+		public UDictionary1 npcDictionary;
+		[Serializable]
+		public class UDictionary1 : UDictionary<Key, Value> {	}
 
-	List<NpcSpawner> NpcSpawnPoses;
-	List<NpcSpawner> CurrentActivePos;
-
-
-	[SerializeField]
-	float minDistance = 20.0f;
-	[SerializeField]
-	float maxDistance = 100.0f;
-
-
-	bool isNpcActivated;
-    public bool IsNpcActivated
-	{
-		get
+		[Serializable]
+		public class Key
 		{
-			return isNpcActivated;
-		}
-		set
-		{
-			isNpcActivated = value;
+			public int questNum;
 
-			if(isNpcActivated)
+			public Key(int questNum)
 			{
-				StartCoroutine("GetDofPlayerVUsingNpc");
-
-				if (CurrentActivePos.Count > 1)
-					StartCoroutine("GetDofPlayervUselessNpc");
+				this.questNum = questNum;
 			}
 		}
-	}
 
-
-	private void Awake()
-	{
-		NpcSpawnPoses = new List<NpcSpawner>();
-		CurrentActivePos = new List<NpcSpawner>();
-
-		for (int i = 0; i < transform.childCount; i++)
+		[Serializable]
+		public class Value
 		{
-			NpcSpawner ns = transform.GetChild(i).gameObject.GetComponent<NpcSpawner>();
-			NpcSpawnPoses.Add(ns);
+			public Transform spawnPos;
 
-			Debug.Log(ns);
+			public GameObject npc;
 		}
-    }
+
+		#endregion
+
+		#region Main
+
+		public Transform playerPos;
+
+		List<Key> CurrentActiveKeys;
+		Key currentQuestKey;
+
+		List<GameObject> ActiveNpcs;
+
+		[SerializeField]
+		float minDistance = 20.0f;
+		[SerializeField]
+		float maxDistance = 100.0f;
+
+
+		bool isNpcActivated;
+		public  bool IsNpcActivated
+		{
+			get
+			{
+				return isNpcActivated;
+			}
+			set
+			{
+				isNpcActivated = value;
+
+				if(isNpcActivated)
+				{
+					StartCoroutine("GetDofPlayerVUsingNpc");
+
+					if (CurrentActiveKeys.Count > 1)
+						StartCoroutine("GetDofPlayervUselessNpc");
+				}
+			}
+		}
+
+		private void Awake()
+		{
+			ActiveNpcs = new List<GameObject>();
+			CurrentActiveKeys = new List<Key>();
+		}
+	#endregion
 
 
 	#endregion
@@ -73,64 +96,77 @@ public class NpcManager : MonoBehaviour
 
 	public void FindRightSpawnPosNActiveNpc()
 	{
-		foreach (NpcSpawner ns in NpcSpawnPoses)
+		int questNum = DataManager.Instance.questNum;
+
+		if(questNum <= DataManager.maxQuestNum)
 		{
-			if (ns.questNum == DataManager.Instance.questNum)
+			foreach (var key in npcDictionary.Keys)
 			{
-				CurrentActivePos.Add(ns);
+				if (key.questNum == questNum)
+				{
+					currentQuestKey = key;
+					CurrentActiveKeys.Add(currentQuestKey);
+				}
 			}
+
+			SpawnNpc();
+		}
+	}
+
+	void SpawnNpc()
+	{
+		Vector3 spawnPos;
+		string spawnPosName = npcDictionary[currentQuestKey].spawnPos.gameObject.name;
+
+		if(spawnPosName == "NearPlayer")
+		{
+			Vector3 nearPlayerPos = playerPos.position + playerPos.forward * 10;
+			spawnPos = new Vector3(nearPlayerPos.x, 10, nearPlayerPos.z);
+		}
+		else
+		{
+			spawnPos = npcDictionary[currentQuestKey].spawnPos.transform.position;
 		}
 
-		//Count - 1 => 이미 활성화된 Npc가 있을 수 있기 때문에, 새롭게 들어갈 Npc만 스폰
-		if(DataManager.Instance.questNum != 0)
-			CurrentActivePos[CurrentActivePos.Count - 1].SpawnNpc();
-		else
-			SpawnNpcNearPlayer();
+		GameObject spawnedNpc = Instantiate(npcDictionary[currentQuestKey].npc, spawnPos, transform.rotation, npcDictionary[currentQuestKey].spawnPos.transform) as GameObject;
+		ActiveNpcs.Add(spawnedNpc);
 
-
-		if (!IsNpcActivated)
-			IsNpcActivated = true;
+		IsNpcActivated = true;
 	}
-
-	void SpawnNpcNearPlayer()
-	{
-		NpcSpawner nearNpcPos = NpcSpawnPoses[NpcSpawnPoses.Count-1];
-
-		Vector3 nearPlayerPos = playerPos.position + playerPos.forward * 10;
-		nearNpcPos.SpawnPos = new Vector3(nearPlayerPos.x, nearNpcPos.transform.position.y, nearPlayerPos.z);
-
-		nearNpcPos.SpawnNpc();
-	}
-
-
 	#endregion
 
 
 	#region Check Distance of Npc and Player : Enable Touch & Delete Npc
 
-
-	NpcSpawner recentActivePos;
-
 	IEnumerator GetDofPlayerVUsingNpc()
 	{
-		recentActivePos = CurrentActivePos[CurrentActivePos.Count - 1];
-
 		float distance;
-		Vector3 NpcPos = CurrentActivePos[CurrentActivePos.Count - 1].SpawnPos;
+		Vector3 NpcPos = ActiveNpcs[ActiveNpcs.Count-1].transform.position;
+		Npc recentActiveNpc = ActiveNpcs[ActiveNpcs.Count - 1].GetComponent<Npc>();
+		Debug.Log(recentActiveNpc);
 
 		do
 		{
 			distance = Vector3.Distance(playerPos.position, NpcPos);
 
-			if (distance < minDistance)
-				recentActivePos.IsTouchable = true;
-			else if (distance > minDistance)
-				recentActivePos.IsTouchable = false;
+			Debug.Log(NpcPos + ": " + distance);
 
+			if (distance < minDistance)
+			{
+				if(!recentActiveNpc.IsTouchable)
+					recentActiveNpc.IsTouchable = true;
+			}
+			else if (distance > minDistance)
+			{
+				if(recentActiveNpc.IsTouchable)
+					recentActiveNpc.IsTouchable = false;
+			}
 
 			yield return new WaitForSecondsRealtime(1.0f);
 
-		} while (!recentActivePos.isClicked);
+		} while (!recentActiveNpc.IsClicked);
+
+		yield return null;
 	}
 
 
@@ -141,23 +177,24 @@ public class NpcManager : MonoBehaviour
 
 		do
 		{
-			for (int i = 0; i <= CurrentActivePos.Count - 2; i++)
+			for (int i = 0; i < ActiveNpcs.Count-1; i++)
 			{
-				NpcPos = CurrentActivePos[i].SpawnPos;
+				NpcPos = ActiveNpcs[i].transform.position;
 				distance = Vector3.Distance(playerPos.position, NpcPos);
 
 				if (distance > maxDistance)
 				{
-					CurrentActivePos[i].DeleteNpc();
-					CurrentActivePos.RemoveAt(i);
+					ActiveNpcs[i].SetActive(false);
+					ActiveNpcs.RemoveAt(i);
 				}
 			}
 
 			yield return new WaitForSecondsRealtime(1.0f);
-		} while (CurrentActivePos.Count < 2);
-	}
 
-	//when Npc Clicked, make bool false
+		} while (ActiveNpcs.Count < 2);
+
+		yield return null;
+	}
 
 	#endregion
 

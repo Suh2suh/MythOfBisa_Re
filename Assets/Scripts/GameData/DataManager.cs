@@ -11,7 +11,7 @@ public class DataManager : MonoBehaviour
 	SaveData playerData;
 	string saveFileName;
 
-	int maxQuestNum = 8;
+	public static int maxQuestNum = 8;
 
 	private void Awake()
 	{
@@ -104,8 +104,11 @@ public class DataManager : MonoBehaviour
 
 	public void plusPlayerQuestNum()
 	{
-		int newQuestNum = playerData.questNum + 1;
-		ChangePlayerQuestNum(newQuestNum);
+		if(playerData.questNum <= maxQuestNum)
+		{
+			int newQuestNum = playerData.questNum + 1;
+			ChangePlayerQuestNum(newQuestNum);
+		}
 	}
 
 	#endregion
@@ -115,9 +118,6 @@ public class DataManager : MonoBehaviour
 	void loadPlayerData()
 	{
 		playerData = SaveSystem.Load(saveFileName);
-
-		if (playerData.questNum > maxQuestNum)
-			ChangePlayerQuestNum(maxQuestNum);
 	}
 
 
@@ -128,6 +128,13 @@ public class DataManager : MonoBehaviour
 	void printPlayerData()
 	{
 		Debug.Log(playerData.playerName + ": Now doing Quest." + playerData.questNum);
+	}
+
+	[ContextMenu("ResetGameData")]
+	void ResetGameData()
+	{
+		ChangePlayerName("");
+		ChangePlayerQuestNum(0);
 	}
 
 	#endregion
