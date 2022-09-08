@@ -6,72 +6,88 @@ public class Npc : MonoBehaviour
 {
 	#region Initialization
 
-	[SerializeField]
-	bool isTouchable = false;
+		bool isTouchable = false;
+		bool isClicked = false;
 
-	// Make Npc Untouchable when the conversation is over
-	public bool IsTouchable
-	{
-		get
-		{
-			return isTouchable;
-		}
-		set
-		{
-			isTouchable = value;
-			Debug.Log(transform.name + " Touchable: " + isTouchable);
+		Outline outliner;
 
-			if(isTouchable)
-				TouchOnScreen.isTouchDetectNeeded = true;
-			else
-				TouchOnScreen.isTouchDetectNeeded = false;
+		public bool IsTouchable
+		{
+			get
+			{
+				return isTouchable;
+			}
+			set
+			{
+				isTouchable = value;
+				Debug.Log(transform.name + " Touchable: " + isTouchable);
+
+				if(isTouchable)
+					TouchOnScreen.isTouchDetectNeeded = true;
+				else
+					TouchOnScreen.isTouchDetectNeeded = false;
+			}
 		}
-	}
+		public bool IsClicked
+		{
+			get { return isClicked; }
+			set { isClicked = value; }
+		}
+
+
+		private void Start()
+		{
+			outliner = gameObject.GetComponent<Outline>();
+		}
+
 	#endregion
 
 
-	#region Npc: ClickCheck / ActiveConversation
+	#region Clicked in Screen / Quest Process
 
-
-	bool isClicked = false;
-	public bool IsClicked
-	{
-		get{ return isClicked; }
-		set{ isClicked = value; }
-	}
-	Outline outliner;
-
-	public void CheckClickAndConversationOn()
-	{
-		if(!IsClicked)
+		public void ClickedOnce()
 		{
 			IsClicked = true;
-
-			outliner = gameObject.GetComponent<Outline>();
-			outliner.OutlineMode = Outline.Mode.OutlineVisible;
+			ShowOutline();
 		}
-		else
+
+		public void ClickedTwice()
 		{
 			IsTouchable = false;
-			outliner.OutlineMode = Outline.Mode.OutlineHidden;
+			HideOutline();
 
 			Debug.Log(DataManager.Instance.questNum + "번 퀘스트 대화 시작");
-			//npc quest number pass
-			//대화 시작, 대화 끝나면 questnum ++;
 
 			//<Test>
 			ProcessConversationEnd();
-
 		}
-	}
 
-	void ProcessConversationEnd()
-	{
-		DataManager.Instance.plusPlayerQuestNum();
-		transform.root.GetComponent<NpcManager>().IsNpcActivated = false;
-		transform.root.GetComponent<NpcManager>().FindRightSpawnPosNActiveNpc();
-	}
+		void ProcessConversationEnd()
+		{
+			DataManager.Instance.plusPlayerQuestNum();
+			transform.root.GetComponent<NpcManager>().IsNpcActivated = false;
+			transform.root.GetComponent<NpcManager>().FindRightSpawnPosNActiveNpc();
+		}
 
+		public void CancleTouched()
+		{
+			IsClicked = false;
+			HideOutline();
+		}
+
+	#endregion
+
+
+	#region OutLine Control
+
+		public void ShowOutline()
+		{
+			outliner.OutlineMode = Outline.Mode.OutlineVisible;
+		}
+		public void HideOutline()
+		{
+			outliner.OutlineMode = Outline.Mode.OutlineHidden;
+		}
 
 	#endregion
 }

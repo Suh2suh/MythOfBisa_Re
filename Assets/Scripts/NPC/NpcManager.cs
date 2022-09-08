@@ -143,13 +143,13 @@ public class NpcManager : MonoBehaviour
 		float distance;
 		Vector3 NpcPos = ActiveNpcs[ActiveNpcs.Count-1].transform.position;
 		Npc recentActiveNpc = ActiveNpcs[ActiveNpcs.Count - 1].GetComponent<Npc>();
-		Debug.Log(recentActiveNpc);
+		//Debug.Log(recentActiveNpc);
 
 		do
 		{
 			distance = Vector3.Distance(playerPos.position, NpcPos);
 
-			Debug.Log(NpcPos + ": " + distance);
+			//Debug.Log(NpcPos + ": " + distance);
 
 			if (distance < minDistance)
 			{
