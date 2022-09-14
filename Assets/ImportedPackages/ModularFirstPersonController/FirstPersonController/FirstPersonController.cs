@@ -210,7 +210,7 @@ public class FirstPersonController : MonoBehaviour
 
         if (cameraCanMove)
         {
-            if (!camMover.isTopViewMode)
+            if (GameManager.currentGameMode == GameManager.GameMode.FieldMode)
 			{
                 yaw = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
 
@@ -236,7 +236,7 @@ public class FirstPersonController : MonoBehaviour
 
         if (enableZoom)
         {
-            if(!camMover.isTopViewMode)
+            if(GameManager.currentGameMode == GameManager.GameMode.FieldMode)
 			{
                 // Changes isZoomed when key is pressed
                 // Behavior for toogle zoom

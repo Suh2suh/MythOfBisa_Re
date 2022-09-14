@@ -57,6 +57,7 @@ public class GUIManager : MonoBehaviour
 					uiStateList[1].SetActive(true);
 					uiStateList[0].SetActive(false);
 					MapState = MapUIState.MapOpened;
+					mainCamMover.CurrentMode = MainCamMoving.CameraMode.TopViewMode;
 					break;
 			}
 		}
@@ -129,7 +130,7 @@ public class GUIManager : MonoBehaviour
 		{
 			case MapUIState.MapOpened:
 				/* Close the Map And Change Cam to Usual*/
-				mainCamMover.OnOffTopViewMode();
+				mainCamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
 				UIState = State.UsualState;
 				break;
 			case MapUIState.MapSearchOn:

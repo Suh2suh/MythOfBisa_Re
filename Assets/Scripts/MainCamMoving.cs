@@ -6,97 +6,112 @@ public class MainCamMoving : MonoBehaviour
 {
     public Transform mainCamTransform;
     public Transform topViewTransform;
-    Transform playerViewTransform = null;
+    public Transform playerViewTransform;
 
     [SerializeField]
     float speedOfConvert;
 
     float lerpPercent = 0f;
 
-    [SerializeField]
-    public bool isTopViewMode;
+    bool isCameraConvertNeeded;
+    bool isCameraConvertingOn;
 
-
-    public void OnOffTopViewMode()
-	{
-        isTopViewMode = !isTopViewMode;
-    }
-
-
-    void Update()
+    public enum CameraMode
     {
-        ConvertCamera();
-    }
+        TopViewMode, PlayerViewMode, DialogueViewMode
+    };
 
-    void ConvertCamera()
+    CameraMode currentMode;
+    CameraMode oldMode;
+
+    public CameraMode CurrentMode
     {
-        if (isTopViewMode)
-        {
-            GoToTopView();
-        }
-        else
-        {
-            GoToPlayerView();
-        }
-
-        ChangeLerpPercentAndCheckIsDone();
-    }
-
-
-    /*
-     <When you Press "Map Btn" in Game>
-      From PlayerView -> TopView
-      Make MainCam as TopViewPos's child to lift it off from Player
-    */
-    void GoToTopView()
-	{
-        if (!isTopViewMode)
-            isTopViewMode = true;
-
-        if (mainCamTransform.parent != topViewTransform.transform)
-            mainCamTransform.parent = topViewTransform.transform;
-
-        mainCamTransform.rotation = Quaternion.Slerp(mainCamTransform.rotation, topViewTransform.rotation, lerpPercent);
-        mainCamTransform.position = Vector3.Slerp(mainCamTransform.position, topViewTransform.position, lerpPercent);
-    }
-
-     /*
-      <When you Press "Back Btn" in Map>
-       From TopView -> PlayerView
-       Make MainCam as Player's child For Player View
-    */
-    void GoToPlayerView()
-	{
-        if (isTopViewMode)
-            isTopViewMode = false;
-
-        if (!playerViewTransform)
+        get
 		{
-            playerViewTransform = GameObject.Find("PlayerCameraPos").transform;
-        }
+            return currentMode;
+		}
+        set
+		{
+            //Do not change the CameraMode if the value is same as old one
+            oldMode = currentMode;
+            currentMode = value;
 
-        if (!isTopViewMode)
-        {
-            if (mainCamTransform.parent != playerViewTransform.transform)
-                mainCamTransform.parent = playerViewTransform.transform;
-        }
+            if (oldMode != currentMode)
+			{
+                switch (currentMode)
+                {
+                    case CameraMode.TopViewMode:
+                        if (mainCamTransform.parent != topViewTransform.transform)
+                            mainCamTransform.parent = topViewTransform.transform;
+                        GameManager.currentGameMode = GameManager.GameMode.UIMode;
+                        break;
 
-        mainCamTransform.rotation = Quaternion.Slerp(mainCamTransform.rotation, playerViewTransform.rotation, lerpPercent);
-        mainCamTransform.position = Vector3.Slerp(mainCamTransform.position, playerViewTransform.position, lerpPercent);
+                    case CameraMode.PlayerViewMode:
+                        if (mainCamTransform.parent != playerViewTransform.transform)
+                            mainCamTransform.parent = playerViewTransform.transform;
+                        break;
+
+                    case CameraMode.DialogueViewMode:
+                        GameManager.currentGameMode = GameManager.GameMode.DialogueMode;
+                        break;
+                    default:
+                        break;
+                }
+
+                isCameraConvertNeeded = true;
+            }
+        }
+	}
+
+
+	private void Start()
+	{
+        currentMode = CameraMode.PlayerViewMode;
     }
 
-    void ChangeLerpPercentAndCheckIsDone()
+
+	private void Update()
 	{
-        if (lerpPercent < 1)
-        {
+		if(isCameraConvertNeeded)
+		{
+			switch (currentMode){
+                case CameraMode.TopViewMode:
+                    LerpTransformTo(topViewTransform);
+                    break;
+
+                case CameraMode.PlayerViewMode:
+                    LerpTransformTo(playerViewTransform);
+                    break;
+
+                case CameraMode.DialogueViewMode:
+                    //LerpTransformTo(dialogueViewTransform)
+                    break;
+                default:
+                    break;
+            }
+        }
+	}
+
+    void LerpTransformTo(Transform lerpTransform)
+	{
+        //lerpPercent -> 0.001~ 1
+        if (lerpPercent < speedOfConvert*2)
+		{
+            mainCamTransform.rotation = Quaternion.Slerp(mainCamTransform.rotation, lerpTransform.rotation, lerpPercent);
+            mainCamTransform.position = Vector3.Slerp(mainCamTransform.position, lerpTransform.position, lerpPercent);
+
             lerpPercent = Mathf.MoveTowards(lerpPercent, 1f, speedOfConvert * Time.deltaTime);
         }
         else
-        {
-            if (lerpPercent != 0)
-            {
-                lerpPercent = 0;
-            }
+		{
+            lerpPercent = 0.0f;
+
+            if (currentMode == CameraMode.PlayerViewMode)
+                GameManager.currentGameMode = GameManager.GameMode.FieldMode;
+
+            isCameraConvertNeeded = false;
         }
+
+        Debug.Log(lerpPercent);
     }
 }
