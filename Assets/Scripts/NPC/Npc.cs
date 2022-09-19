@@ -51,22 +51,17 @@ public class Npc : MonoBehaviour
 			ShowOutline();
 		}
 
+		//나중에 performance 차이 비교 후 ->
+		//npcManager에 두번 클릭된 Npc 전달
+		//dialoigueManager에 대화 번호 전달
 		public void ClickedTwice()
 		{
 			IsTouchable = false;
 			HideOutline();
 
-			Debug.Log(DataManager.Instance.questNum + "번 퀘스트 대화 시작");
-
-			//<Test>
-			ProcessConversationEnd();
-		}
-
-		void ProcessConversationEnd()
-		{
-			DataManager.Instance.plusPlayerQuestNum();
-			transform.root.GetComponent<NpcManager>().IsNpcActivated = false;
-			transform.root.GetComponent<NpcManager>().FindRightSpawnPosNActiveNpc();
+			int questNum = DataManager.Instance.questNum;
+			Transform npcCameraHead = transform.Find("CameraHead");
+			transform.root.GetComponent<NpcManager>().StartDialogue(npcCameraHead, questNum);
 		}
 
 		public void CancleTouched()

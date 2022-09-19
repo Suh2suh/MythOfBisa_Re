@@ -599,6 +599,37 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0000000016298145, y: -0.0039612707, z: -0.0043890052}
     m_Extent: {x: 0.0020679084, y: 0.0014864916, z: 0.0022758092}
   m_DirtyAABB: 0
+--- !u!1 &6865580855704244017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3768635964909367321}
+  m_Layer: 7
+  m_Name: CameraHead
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3768635964909367321
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6865580855704244017}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0.19999999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8376583466699833846}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &6938610093745172071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1488,6 +1519,7 @@ Transform:
   - {fileID: 3077335755371903775}
   - {fileID: 2684314197435559255}
   - {fileID: 3565882122630419592}
+  - {fileID: 3768635964909367321}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

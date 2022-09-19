@@ -80,7 +80,10 @@ public class NpcManager : MonoBehaviour
 			}
 		}
 
-		public CheckSeenObject NameTagManager;
+		[SerializeField]
+		NameTagManager NameTagManager;
+		[SerializeField]
+		MainCamMoving CamMover;
 
 		private void Awake()
 		{
@@ -214,4 +217,29 @@ public class NpcManager : MonoBehaviour
 
 	#endregion
 
+	#region Start Dialogue of Npc
+	public void StartDialogue(Transform npc, int questNum)
+	{
+		CamMover.WatchNpc(npc);
+		Debug.Log(questNum + "번 대화 시작");
+		//DialogueManager.StartDialogue(questNum);
+
+		//when the dialogue is finished
+		EndDialogue();
+	}
+	void EndDialogue()
+	{
+		DataManager.Instance.plusPlayerQuestNum();
+		IsNpcActivated = false;
+		FindRightSpawnPosNActiveNpc();
+		//CamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
+	}
+
+
+	//ERASE THIS after making dialogue system
+	public void Test_ToPlayerView()
+	{
+		CamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
+	}
+	#endregion
 }

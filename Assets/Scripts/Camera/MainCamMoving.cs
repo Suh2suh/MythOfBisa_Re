@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class MainCamMoving : MonoBehaviour
 {
-	#region Initialization
+    #region Initialization
 
-	    #region Variables
+    #region Variables
 
-	    public Transform mainCamTransform;
-        public Transform topViewTransform;
-        public Transform playerViewTransform;
+        [SerializeField]
+        Transform mainCamTransform;
+        [SerializeField]
+        Transform topViewTransform;
+        [SerializeField]
+        Transform playerViewTransform;
+        [SerializeField]
+        Transform npcViewTransform;
 
         [SerializeField]
         float speedOfConvert;
@@ -57,6 +62,7 @@ public class MainCamMoving : MonoBehaviour
                             break;
 
                         case CameraMode.DialogueViewMode:
+                            if (mainCamTransform.parent != playerViewTransform.transform) mainCamTransform.parent = npcViewTransform.transform;
                             GameManager.currentGameMode = GameManager.GameMode.DialogueMode;
                             break;
 
@@ -76,6 +82,8 @@ public class MainCamMoving : MonoBehaviour
 
     #endregion
 
+    public Transform watchngNpc;
+
     private void Update()
 	{
 		if(isCameraConvertNeeded)
@@ -91,7 +99,7 @@ public class MainCamMoving : MonoBehaviour
                     break;
 
                 case CameraMode.DialogueViewMode:
-                    //LerpTransformTo(dialogueViewTransform)
+                    LerpTransformTo(watchngNpc);
                     break;
 
                 default:
@@ -124,6 +132,12 @@ public class MainCamMoving : MonoBehaviour
             isCameraConvertNeeded = false;
         }
 
-        //Debug.Log(lerpPercent);
+        Debug.Log(lerpPercent);
+    }
+
+    public void WatchNpc(Transform Npc)
+    {
+        watchngNpc = Npc;
+        CurrentMode = CameraMode.DialogueViewMode;
     }
 }
