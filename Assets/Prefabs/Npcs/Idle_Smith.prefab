@@ -309,6 +309,37 @@ Transform:
   m_Father: {fileID: 67250964458815994}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1617185314224668417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5614060241191524335}
+  m_Layer: 7
+  m_Name: NpcTagHead
+  m_TagString: TagHead
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5614060241191524335
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617185314224668417}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.12, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5427950125595654480}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1695749050284880444
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,6 +823,7 @@ Transform:
   - {fileID: 8929139634660536052}
   - {fileID: 6259821831437174957}
   - {fileID: 3304719005583057833}
+  - {fileID: 5614060241191524335}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -858,7 +890,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09737c6ef8d0bf548b362036df214768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isClicked: 0
 --- !u!1 &4902345931633752787
 GameObject:
   m_ObjectHideFlags: 0

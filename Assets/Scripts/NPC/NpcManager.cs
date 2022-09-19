@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class NpcManager : MonoBehaviour
 {
-	//GameData ƒ˘Ω∫∆Æ π¯»£ ∫Ø∞Êµ  -> ªı∑ŒøÓ ƒ˘Ω∫∆Æ ¿ŒΩƒ
-	//ªı∑ŒøÓ ƒ˘Ω∫∆Æ -> npc º≠º≠»˜ ªÁ∂Û¡¸
+	//GameData ÌÄòÏä§Ìä∏ Î≤àÌò∏ Î≥ÄÍ≤ΩÎê® -> ÏÉàÎ°úÏö¥ ÌÄòÏä§Ìä∏ Ïù∏Ïãù
+	//ÏÉàÎ°úÏö¥ ÌÄòÏä§Ìä∏ -> npc ÏÑúÏÑúÌûà ÏÇ¨ÎùºÏßê
 
 	#region Initialization
 
@@ -45,12 +45,21 @@ public class NpcManager : MonoBehaviour
 		List<Key> CurrentActiveKeys;
 		Key currentQuestKey;
 
-		List<GameObject> ActiveNpcs;
+		List<GameObject> activeNpcs;
+		public List<GameObject> ActiveNpcs
+		{
+			get
+			{
+				return activeNpcs;
+			}
+		}
 
 		[SerializeField]
 		float minDistance = 20.0f;
 		[SerializeField]
 		float maxDistance = 100.0f;
+		[SerializeField]
+		float nametagDistance = 35.0f;
 
 
 		bool isNpcActivated;
@@ -66,17 +75,16 @@ public class NpcManager : MonoBehaviour
 
 				if(isNpcActivated)
 				{
-					StartCoroutine("GetDofPlayerVUsingNpc");
-
-					if (CurrentActiveKeys.Count > 1)
-						StartCoroutine("GetDofPlayervUselessNpc");
+					StartCoroutine(GetDofPlayerVNpc());
 				}
 			}
 		}
 
+		public CheckSeenObject NameTagManager;
+
 		private void Awake()
 		{
-			ActiveNpcs = new List<GameObject>();
+			activeNpcs = new List<GameObject>();
 			CurrentActiveKeys = new List<Key>();
 		}
 	#endregion
@@ -138,60 +146,68 @@ public class NpcManager : MonoBehaviour
 
 	#region Check Distance of Npc and Player : Enable Touch & Delete Npc
 
-	IEnumerator GetDofPlayerVUsingNpc()
-	{
-		float distance;
-		Vector3 NpcPos = ActiveNpcs[ActiveNpcs.Count-1].transform.position;
-		Npc recentActiveNpc = ActiveNpcs[ActiveNpcs.Count - 1].GetComponent<Npc>();
-		//Debug.Log(recentActiveNpc);
-
-		do
-		{
-			distance = Vector3.Distance(playerPos.position, NpcPos);
-
-			//Debug.Log(NpcPos + ": " + distance);
-
-			if (distance < minDistance)
-			{
-				if(!recentActiveNpc.IsTouchable)
-					recentActiveNpc.IsTouchable = true;
-			}
-			else if (distance > minDistance)
-			{
-				if(recentActiveNpc.IsTouchable)
-					recentActiveNpc.IsTouchable = false;
-			}
-
-			yield return new WaitForSecondsRealtime(1.0f);
-
-		} while (!recentActiveNpc.IsClicked);
-
-		yield return null;
-	}
-
-
-	IEnumerator GetDofPlayervUselessNpc()
+	IEnumerator GetDofPlayerVNpc()
 	{
 		float distance;
 		Vector3 NpcPos;
 
 		do
 		{
-			for (int i = 0; i < ActiveNpcs.Count-1; i++)
+			for (int i = 0; i < ActiveNpcs.Count; i++)
 			{
 				NpcPos = ActiveNpcs[i].transform.position;
 				distance = Vector3.Distance(playerPos.position, NpcPos);
 
-				if (distance > maxDistance)
+				//ÏµúÍ∑º npcÎ©¥ -> ÎåÄÌôî Ï≤¥ÌÅ¨
+				if (i == ActiveNpcs.Count - 1)
 				{
-					ActiveNpcs[i].SetActive(false);
-					ActiveNpcs.RemoveAt(i);
+					Npc recentActiveNpc = ActiveNpcs[i].GetComponent<Npc>();
+
+					if (distance < minDistance)
+					{
+						if (!recentActiveNpc.IsTouchable)
+							recentActiveNpc.IsTouchable = true;
+					}
+					else if (distance > minDistance)
+					{
+						if (recentActiveNpc.IsTouchable)
+							recentActiveNpc.IsTouchable = false;
+					}
+				}
+				//Ïù¥ÎØ∏ Ïì∞Ïù∏ npc -> Î©ÄÏñ¥ÏßÄÎ©¥ ÏÇ≠Ï†ú
+				else
+				{
+					if (distance > maxDistance)
+					{
+						ActiveNpcs[i].SetActive(false);
+						ActiveNpcs.RemoveAt(i);
+					}
+				}
+
+				//Í≥µÌÜµ -> Î™ÖÏ∞∞ see unsee
+				if(distance < nametagDistance)
+				{
+					Debug.Log(ActiveNpcs[i].name + " Î™ÖÏ∞∞ Í±∞Î¶¨");
+
+					var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
+					Debug.Log(nameTagTransform);
+
+					//TODO: Send npc name by switch block check (not gameobject name)
+					NameTagManager.AddNpcHead(nameTagTransform, activeNpcs[i].name);
+				}
+				else
+				{
+					Debug.Log(ActiveNpcs[i].name + " Î™ÖÏ∞∞ Ìï¥Ï†ú");
+
+					var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
+
+					NameTagManager.InactiveNametag(nameTagTransform);
 				}
 			}
 
-			yield return new WaitForSecondsRealtime(1.0f);
+			yield return new WaitForSecondsRealtime(0.5f);
 
-		} while (ActiveNpcs.Count < 2);
+		} while (isNpcActivated);
 
 		yield return null;
 	}

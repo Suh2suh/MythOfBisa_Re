@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    //Game Mode is different from Camera Mode.
-    //After Camera Slerp, Game mode is changed (Unless, cam moves without attention)
+    /*
+     * Game Mode is different from Camera Mode.
+     * Game mode should only be changed by MainCamMoving.cs
+    */
     public enum GameMode
 	{
         FieldMode,
@@ -15,15 +17,9 @@ public class GameManager : MonoBehaviour
 
     public static GameMode currentGameMode;
 
-	// Start is called before the first frame update
 	private void Awake()
 	{
         currentGameMode = GameMode.FieldMode;
 	}
 
-	// Update is called once per frame
-	void Update()
-    {
-        
-    }
 }

@@ -171,6 +171,37 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000000005122274, y: -0.005857486, z: -0.013409451}
     m_Extent: {x: 0.003948997, y: 0.00045846635, z: 0.0019367309}
   m_DirtyAABB: 0
+--- !u!1 &824014590869286949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7193798812627577943}
+  m_Layer: 7
+  m_Name: NpcTagHead
+  m_TagString: TagHead
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7193798812627577943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824014590869286949}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.17, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8792948520722158512}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &962084426899879219
 GameObject:
   m_ObjectHideFlags: 0
@@ -1493,6 +1524,7 @@ Transform:
   - {fileID: 2633949163996440921}
   - {fileID: 1667900229577946993}
   - {fileID: 586738173557801987}
+  - {fileID: 7193798812627577943}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1559,7 +1591,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09737c6ef8d0bf548b362036df214768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isClicked: 0
 --- !u!1 &8312234705318265347
 GameObject:
   m_ObjectHideFlags: 0
