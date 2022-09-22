@@ -59,7 +59,9 @@ public class Npc : MonoBehaviour
 			IsTouchable = false;
 			HideOutline();
 
+
 			int questNum = DataManager.Instance.questNum;
+
 			Transform npcCameraHead = transform.Find("CameraHead");
 			transform.root.GetComponent<NpcManager>().StartDialogue(npcCameraHead, questNum);
 		}

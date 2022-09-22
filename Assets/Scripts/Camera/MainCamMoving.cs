@@ -111,7 +111,7 @@ public class MainCamMoving : MonoBehaviour
     void LerpTransformTo(Transform lerpTransform)
 	{
         //lerpPercent -> 0.001~ 1
-        if (lerpPercent < speedOfConvert*2)
+        if (lerpPercent < speedOfConvert*3)
 		{
             if (!isCameraConvertingOn)
                 isCameraConvertingOn = true;
@@ -132,7 +132,7 @@ public class MainCamMoving : MonoBehaviour
             isCameraConvertNeeded = false;
         }
 
-        Debug.Log(lerpPercent);
+        //Debug.Log(lerpPercent);
     }
 
     public void WatchNpc(Transform Npc)

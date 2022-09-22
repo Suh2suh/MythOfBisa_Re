@@ -102,6 +102,9 @@ public class DataManager : MonoBehaviour
 		printPlayerData();
 	}
 
+	///<summary>
+	/// QuestNum += 1
+	/// </summary>
 	public void plusPlayerQuestNum()
 	{
 		if(playerData.questNum <= maxQuestNum)

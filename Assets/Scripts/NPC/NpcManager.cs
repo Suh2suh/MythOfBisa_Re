@@ -84,8 +84,10 @@ public class NpcManager : MonoBehaviour
 		NameTagManager NameTagManager;
 		[SerializeField]
 		MainCamMoving CamMover;
+		[SerializeField]
+		DialogueManager DialogueManager;
 
-		private void Awake()
+	private void Awake()
 		{
 			activeNpcs = new List<GameObject>();
 			CurrentActiveKeys = new List<Key>();
@@ -139,7 +141,7 @@ public class NpcManager : MonoBehaviour
 			spawnPos = npcDictionary[currentQuestKey].spawnPos.transform.position;
 		}
 
-		GameObject spawnedNpc = Instantiate(npcDictionary[currentQuestKey].npc, spawnPos, transform.rotation, npcDictionary[currentQuestKey].spawnPos.transform) as GameObject;
+		GameObject spawnedNpc = Instantiate(npcDictionary[currentQuestKey].npc, spawnPos, npcDictionary[currentQuestKey].spawnPos.rotation, npcDictionary[currentQuestKey].spawnPos.transform) as GameObject;
 		ActiveNpcs.Add(spawnedNpc);
 
 		IsNpcActivated = true;
@@ -158,57 +160,59 @@ public class NpcManager : MonoBehaviour
 		{
 			for (int i = 0; i < ActiveNpcs.Count; i++)
 			{
-				NpcPos = ActiveNpcs[i].transform.position;
-				distance = Vector3.Distance(playerPos.position, NpcPos);
-
-				//최근 npc면 -> 대화 체크
-				if (i == ActiveNpcs.Count - 1)
+				if(GameManager.currentGameMode == GameManager.GameMode.FieldMode)
 				{
-					Npc recentActiveNpc = ActiveNpcs[i].GetComponent<Npc>();
+					NpcPos = ActiveNpcs[i].transform.position;
+					distance = Vector3.Distance(playerPos.position, NpcPos);
 
-					if (distance < minDistance)
+					//최근 npc면 -> 대화 체크
+					if (i == ActiveNpcs.Count - 1)
 					{
-						if (!recentActiveNpc.IsTouchable)
-							recentActiveNpc.IsTouchable = true;
+						Npc recentActiveNpc = ActiveNpcs[i].GetComponent<Npc>();
+
+						if (distance < minDistance)
+						{
+							if (!recentActiveNpc.IsTouchable)
+								recentActiveNpc.IsTouchable = true;
+						}
+						else if (distance > minDistance)
+						{
+							if (recentActiveNpc.IsTouchable)
+								recentActiveNpc.IsTouchable = false;
+						}
 					}
-					else if (distance > minDistance)
+					//이미 쓰인 npc -> 멀어지면 삭제
+					else
 					{
-						if (recentActiveNpc.IsTouchable)
-							recentActiveNpc.IsTouchable = false;
+						if (distance > maxDistance)
+						{
+							ActiveNpcs[i].SetActive(false);
+							ActiveNpcs.RemoveAt(i);
+						}
 					}
-				}
-				//이미 쓰인 npc -> 멀어지면 삭제
-				else
-				{
-					if (distance > maxDistance)
+
+					//공통 -> 명찰 see unsee
+					if (distance < nametagDistance)
 					{
-						ActiveNpcs[i].SetActive(false);
-						ActiveNpcs.RemoveAt(i);
+						Debug.Log(ActiveNpcs[i].name + " 명찰 거리");
+
+						var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
+						Debug.Log(nameTagTransform);
+
+						//TODO: Send npc name by switch block check (not gameobject name)
+						NameTagManager.AddNpcHead(nameTagTransform, activeNpcs[i].name);
+					}
+					else
+					{
+						Debug.Log(ActiveNpcs[i].name + " 명찰 해제");
+
+						var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
+
+						NameTagManager.InactiveNametag(nameTagTransform);
 					}
 				}
-
-				//공통 -> 명찰 see unsee
-				if(distance < nametagDistance)
-				{
-					Debug.Log(ActiveNpcs[i].name + " 명찰 거리");
-
-					var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
-					Debug.Log(nameTagTransform);
-
-					//TODO: Send npc name by switch block check (not gameobject name)
-					NameTagManager.AddNpcHead(nameTagTransform, activeNpcs[i].name);
-				}
-				else
-				{
-					Debug.Log(ActiveNpcs[i].name + " 명찰 해제");
-
-					var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
-
-					NameTagManager.InactiveNametag(nameTagTransform);
-				}
+				yield return new WaitForSecondsRealtime(0.5f);
 			}
-
-			yield return new WaitForSecondsRealtime(0.5f);
 
 		} while (isNpcActivated);
 
@@ -217,28 +221,18 @@ public class NpcManager : MonoBehaviour
 
 	#endregion
 
-	#region Start Dialogue of Npc
-	public void StartDialogue(Transform npc, int questNum)
-	{
-		CamMover.WatchNpc(npc);
-		Debug.Log(questNum + "번 대화 시작");
-		//DialogueManager.StartDialogue(questNum);
 
-		//when the dialogue is finished
-		EndDialogue();
-	}
-	void EndDialogue()
+	#region Start Dialogue of Npc
+	public void StartDialogue(Transform npcHead, int questNum)
 	{
-		DataManager.Instance.plusPlayerQuestNum();
+		CamMover.WatchNpc(npcHead);
+		DialogueManager.StartDialogue(questNum);
+	}
+	public void SpawnNextNpcNWatchPlayer()
+	{
 		IsNpcActivated = false;
 		FindRightSpawnPosNActiveNpc();
-		//CamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
-	}
 
-
-	//ERASE THIS after making dialogue system
-	public void Test_ToPlayerView()
-	{
 		CamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
 	}
 	#endregion
