@@ -74,7 +74,6 @@ public class Npc : MonoBehaviour
 
 	#endregion
 
-
 	#region OutLine Control
 
 		public void ShowOutline()

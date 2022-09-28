@@ -58,7 +58,7 @@ public class DialogueManager : MonoBehaviour
                 EventStartPageNums.Add(page);
             }
 		}
-        for (int page = 0; page < MainDialogue.Count; page++)
+        for (int page = 0; page < SelectDialogue.Count; page++)
         {
             if (SelectDialogue[page]["SelectEvent"].ToString() != "")
             {

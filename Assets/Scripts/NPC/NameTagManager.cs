@@ -30,8 +30,6 @@ public class NameTagManager : MonoBehaviour
 
 
 	#region On/Off NameTags
-
-		bool isInScreen;
 		
 		private void Update()
 		{
@@ -39,13 +37,22 @@ public class NameTagManager : MonoBehaviour
 			{
 				foreach(var head in ActiveNeededTags.Keys.ToList())
 				{
-					Vector3 screenPos = cam.WorldToScreenPoint(head.position);
-					isInScreen = (screenPos.z >= 0);
+					var screenPos = cam.WorldToScreenPoint(head.position);
+					var isInScreen = (screenPos.z >= 0);
 
 				    if(isInScreen)
 					{
-						ActiveNeededTags[head].transform.position = screenPos;
-						break;
+						if(GameManager.currentGameMode == GameManager.GameMode.FieldMode)
+						{
+							ActiveNeededTags[head].transform.position = screenPos;
+							Debug.Log(head);
+							//break;
+							continue;
+						}
+						else
+						{
+							InactiveNametag(head);
+						}
 					}
 					else
 					{
