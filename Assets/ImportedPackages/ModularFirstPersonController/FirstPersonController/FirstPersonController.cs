@@ -371,6 +371,8 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
+    //CAM TEST
+    float UpDownRadius;
     void FixedUpdate()
     {
         #region Movement
@@ -379,7 +381,12 @@ public class FirstPersonController : MonoBehaviour
             if (playerCanMove)
             {
                 // Calculate how fast we should be moving
-                Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                if (Input.GetKey(KeyCode.R))    UpDownRadius = 1.0f;     //CAM TEST
+                else if (Input.GetKey(KeyCode.F))   UpDownRadius = -1.0f;     //CAM TEST
+                else   UpDownRadius = 0.0f;     //CAM TEST
+
+                //Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));    //ORIGINAL
+                Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), UpDownRadius, Input.GetAxis("Vertical"));     //CAM TEST
 
                 // Checks if player is walking and isGrounded
                 // Will allow head bob
@@ -402,7 +409,8 @@ public class FirstPersonController : MonoBehaviour
                     Vector3 velocityChange = (targetVelocity - velocity);
                     velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
                     velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                    velocityChange.y = 0;
+                    //velocityChange.y = 0;    //ORIGINAL
+                    velocityChange.y = Mathf.Clamp(velocityChange.y, -maxVelocityChange, maxVelocityChange);    //CAM TEST
 
                     // Player is only moving when valocity change != 0
                     // Makes sure fov change only happens during movement
@@ -440,7 +448,8 @@ public class FirstPersonController : MonoBehaviour
                     Vector3 velocityChange = (targetVelocity - velocity);
                     velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
                     velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-                    velocityChange.y = 0;
+                    //velocityChange.y = 0;    //ORIGINAL
+                    velocityChange.y = Mathf.Clamp(velocityChange.y, -maxVelocityChange, maxVelocityChange);    //CAM TEST
 
                     rb.AddForce(velocityChange, ForceMode.VelocityChange);
                 }
