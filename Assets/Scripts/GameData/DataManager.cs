@@ -140,6 +140,28 @@ public class DataManager : MonoBehaviour
 		ChangePlayerQuestNum(0);
 	}
 
+	[ContextMenu("CamTestWithBisa")]
+	void SetGameDataForCam_Bell()
+	{
+		ChangePlayerName("캐롤");
+		ChangePlayerQuestNum(0);
+	}
+
+	[ContextMenu("CamTestWithBell")]
+	void SetGameDataForCam_Belll()
+	{
+		ChangePlayerName("캐롤");
+		ChangePlayerQuestNum(3);
+	}
+
+	[ContextMenu("CamTestWithSusan")]
+	void SetGameDataForCam_Susan()
+	{
+		ChangePlayerName("캐롤");
+		ChangePlayerQuestNum(4);
+	}
+
+
 	#endregion
 
 

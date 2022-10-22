@@ -24,13 +24,14 @@ public class DialogueManager : MonoBehaviour
         public TextMeshProUGUI DialogueMainText;
 
 
-
         [SerializeField]
         GameObject QuestGenerator;
         [SerializeField]
         NpcManager NpcManager;
-
         [SerializeField]
+        DataManager DataManager;
+
+    [SerializeField]
         float TalkingSpeed = 0.05f;
 
         List<int> EventStartPageNums;
@@ -38,6 +39,8 @@ public class DialogueManager : MonoBehaviour
 
         int questNum;
         int finalEventNum;
+
+        string playerName;
 
         #endregion
 
@@ -65,6 +68,8 @@ public class DialogueManager : MonoBehaviour
                 SelectStartPageNums.Add(page);
             }
         }
+
+        playerName = DataManager.playerName;
     }
 
     #endregion
@@ -138,7 +143,12 @@ public class DialogueManager : MonoBehaviour
             case null:
                 DialogueNameBox.SetActive(false);
                 break;
-
+            //TODO: 좀 더 효율적인 방법 찾을 것
+            case "player":
+                DialogueNameText.text = playerName;
+                if (!DialogueNameBox.activeSelf)
+                    DialogueNameBox.SetActive(true);
+                break;
             default:
                 DialogueNameText.text = name;
                 if (!DialogueNameBox.activeSelf)
@@ -150,6 +160,9 @@ public class DialogueManager : MonoBehaviour
     void ChangeMainText()
 	{
         string content = MainDialogue[pageNum]["Dialogue"].ToString();
+
+        //ReplaceAll 아니라 Replace지만 다 바뀜
+        if (content.Contains("player")) content.Replace("player", playerName);
 
         StartCoroutine(AnimateText(content));
     }

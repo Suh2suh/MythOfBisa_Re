@@ -194,17 +194,17 @@ public class NpcManager : MonoBehaviour
 					//공통 -> 명찰 see unsee
 					if (distance < nametagDistance)
 					{
-						Debug.Log(ActiveNpcs[i].name + " 명찰 거리");
+						//Debug.Log(ActiveNpcs[i].name + " 명찰 거리");
 
 						var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
-						Debug.Log(nameTagTransform);
+						//Debug.Log(nameTagTransform);
 
 						//TODO: Send npc name by switch block check (not gameobject name)
 						NameTagManager.AddNpcHead(nameTagTransform, activeNpcs[i].name);
 					}
 					else
 					{
-						Debug.Log(ActiveNpcs[i].name + " 명찰 해제");
+						//Debug.Log(ActiveNpcs[i].name + " 명찰 해제");
 
 						var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
 

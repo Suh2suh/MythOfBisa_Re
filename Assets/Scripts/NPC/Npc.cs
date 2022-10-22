@@ -20,7 +20,7 @@ public class Npc : MonoBehaviour
 			set
 			{
 				isTouchable = value;
-				Debug.Log(transform.name + " Touchable: " + isTouchable);
+				//Debug.Log(transform.name + " Touchable: " + isTouchable);
 
 				if(isTouchable)
 					TouchOnScreen.isTouchDetectNeeded = true;

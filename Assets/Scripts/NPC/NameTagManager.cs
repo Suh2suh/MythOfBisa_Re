@@ -70,7 +70,7 @@ public class NameTagManager : MonoBehaviour
 
 				npcNameTag.transform.SetParent(nametagFolder.transform, false);
 				var nameTagText = npcNameTag.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
-				nameTagText.text = name;
+				nameTagText.text = ChangeNameTagText(name);
 
 				NpcHeadToTag.Add(npcHead, npcNameTag);
 				ActiveNeededTags.Add(npcHead, NpcHeadToTag[npcHead]);
@@ -93,6 +93,21 @@ public class NameTagManager : MonoBehaviour
 
 				ActiveNeededTags.Remove(npcHead);
 			}
+		}
+
+
+		string ChangeNameTagText(string name)
+		{
+			//TODO: 좀 더 효율적인 구문 찾기 (switch로 바꿀 방법)
+			if (name.Contains("Bisa")) name = "비사 Bisa";
+			else if (name.Contains("Adam")) name = "애덤 Adam";
+			else if (name.Contains("Will")) name = "윌 Will";
+			else if (name.Contains("Bell")) name = "벨 Bell";
+			else if (name.Contains("Susan")) name = "수잔 Susan";
+			else if (name.Contains("Mitty")) name = "미티 Mitty";
+			else if (name.Contains("Damon")) name = "데이먼 Damon";
+
+			return name;
 		}
 
 	#endregion
