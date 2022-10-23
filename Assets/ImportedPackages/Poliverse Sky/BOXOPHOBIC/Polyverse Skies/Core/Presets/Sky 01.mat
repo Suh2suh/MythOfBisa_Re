@@ -236,7 +236,7 @@ Material:
     - _EnableSunMoonMask: 1
     - _EnableTwinkling: 1
     - _EqHeight: 0.419
-    - _EquatorHeight: 0.605
+    - _EquatorHeight: 0.56
     - _EquatorSmoothness: 0.429
     - _Exposure: 0
     - _Fade: 0
@@ -331,7 +331,7 @@ Material:
     - _Color2: {r: 0.059472326, g: 0.25068596, b: 0.8088235, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Eq: {r: 1, g: 0.6769777, b: 0.330882, a: 0}
-    - _EquatorColor: {r: 0.3433962, g: 0.82976943, b: 1, a: 1}
+    - _EquatorColor: {r: 0.7571022, g: 0.90943795, b: 0.9622642, a: 1}
     - _Ground: {r: 0.4779411, g: 0.43111518, b: 0.23545504, a: 0}
     - _GroundColor: {r: 0.57924527, g: 0.93930334, b: 1, a: 1}
     - _MoonColor: {r: 1, g: 1, b: 1, a: 1}

@@ -91,10 +91,12 @@ public class MainCamMoving : MonoBehaviour
 			switch (currentMode)
             {
                 case CameraMode.TopViewMode:
+                    ConvertionRadius = 1.5f;
                     LerpTransformTo(topViewTransform);
                     break;
 
                 case CameraMode.PlayerViewMode:
+                    ConvertionRadius = 1.8f;
                     LerpTransformTo(playerViewTransform);
                     break;
 
@@ -108,10 +110,15 @@ public class MainCamMoving : MonoBehaviour
         }
 	}
 
+    //1.0~3.0f
+    float ConvertionRadius;
+
     void LerpTransformTo(Transform lerpTransform)
 	{
         //lerpPercent -> 0.001~ 1
-        if (lerpPercent < speedOfConvert*3)
+        //speedOfConvert 조절 -> Mode 변환 시간 변화
+        //if lerpTransfrom == TopviewTransform -> convertionradius  = 1.5
+        if (lerpPercent < speedOfConvert* ConvertionRadius)
 		{
             if (!isCameraConvertingOn)
                 isCameraConvertingOn = true;
@@ -132,7 +139,7 @@ public class MainCamMoving : MonoBehaviour
             isCameraConvertNeeded = false;
         }
 
-        //Debug.Log(lerpPercent);
+        Debug.Log(lerpPercent);
     }
 
     public void WatchNpc(Transform Npc)
