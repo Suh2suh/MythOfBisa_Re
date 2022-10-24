@@ -101,6 +101,7 @@ public class MainCamMoving : MonoBehaviour
                     break;
 
                 case CameraMode.DialogueViewMode:
+                    ConvertionRadius = 3.0f;
                     LerpTransformTo(watchngNpc);
                     break;
 
@@ -139,7 +140,7 @@ public class MainCamMoving : MonoBehaviour
             isCameraConvertNeeded = false;
         }
 
-        Debug.Log(lerpPercent);
+        //Debug.Log(lerpPercent);
     }
 
     public void WatchNpc(Transform Npc)

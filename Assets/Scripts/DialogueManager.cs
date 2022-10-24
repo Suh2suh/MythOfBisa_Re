@@ -162,7 +162,11 @@ public class DialogueManager : MonoBehaviour
         string content = MainDialogue[pageNum]["Dialogue"].ToString();
 
         //ReplaceAll 아니라 Replace지만 다 바뀜
-        if (content.Contains("player")) content.Replace("player", playerName);
+        if (content.Contains("player"))
+        {
+            Debug.Log("player");
+            content = content.Replace("player", playerName);
+        }
 
         StartCoroutine(AnimateText(content));
     }
