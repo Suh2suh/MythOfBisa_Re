@@ -112,6 +112,7 @@ public class NpcManager : MonoBehaviour
 		int questNum = DataManager.Instance.questNum;
 
 		if(questNum <= DataManager.maxQuestNum)
+		if (questNum <= 8)
 		{
 			foreach (var key in npcDictionary.Keys)
 			{
@@ -145,6 +146,9 @@ public class NpcManager : MonoBehaviour
 		ActiveNpcs.Add(spawnedNpc);
 
 		IsNpcActivated = true;
+
+
+		Debug.Log("Spawned NPC");
 	}
 	#endregion
 
@@ -162,13 +166,15 @@ public class NpcManager : MonoBehaviour
 			{
 				if(GameManager.currentGameMode == GameManager.GameMode.FieldMode)
 				{
+					//Debug.Log(ActiveNpcs[i].transform.name);
+
 					NpcPos = ActiveNpcs[i].transform.position;
 					distance = Vector3.Distance(playerPos.position, NpcPos);
 
 					//최근 npc면 -> 대화 체크
 					if (i == ActiveNpcs.Count - 1)
 					{
-						Npc recentActiveNpc = ActiveNpcs[i].GetComponent<Npc>();
+						Npc recentActiveNpc = ActiveNpcs[i].GetComponentInChildren<Npc>();
 
 						if (distance < minDistance)
 						{

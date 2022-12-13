@@ -82,7 +82,7 @@ public class MainCamMoving : MonoBehaviour
 
     #endregion
 
-    public Transform watchngNpc;
+    Transform watchngNpc;
 
     private void Update()
 	{
@@ -91,12 +91,12 @@ public class MainCamMoving : MonoBehaviour
 			switch (currentMode)
             {
                 case CameraMode.TopViewMode:
-                    ConvertionRadius = 1.5f;
+                    ConvertionRadius = 3.0f;
                     LerpTransformTo(topViewTransform);
                     break;
 
                 case CameraMode.PlayerViewMode:
-                    ConvertionRadius = 1.8f;
+                    ConvertionRadius = 3.0f;
                     LerpTransformTo(playerViewTransform);
                     break;
 
