@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
      * Game Mode is different from Camera Mode.
      * Game mode should only be changed by MainCamMoving.cs
     */
+
+
     public enum GameMode
 	{
         FieldMode,

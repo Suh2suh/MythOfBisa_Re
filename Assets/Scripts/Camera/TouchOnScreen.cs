@@ -37,73 +37,70 @@ public class TouchOnScreen : MonoBehaviour
             
             if(isTouchDetectNeeded)
 		    {
-            
-            
-			    #region MobileTouch
-            /*
-			    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-                {    
-                    Ray ray = Camera.current.ScreenPointToRay(Input.GetTouch(0).position);
-                    RaycastHit hit;
 
-                    //if Layer is "MapPin"
-                    if (Physics.Raycast(ray, out hit))
-                    {
-                        Debug.Log(hit.transform.parent.name);
+#if UNITY_ANDROID && !UNITY_EDITOR
 
-                        switch (hit.transform.gameObject.layer)
+			        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+                    {    
+                        Ray ray = Camera.current.ScreenPointToRay(Input.GetTouch(0).position);
+                        RaycastHit hit;
+
+                        //if Layer is "MapPin"
+                        if (Physics.Raycast(ray, out hit))
                         {
+                            Debug.Log(hit.transform.parent.name);
+
+                            switch (hit.transform.gameObject.layer)
+                            {
                             #region MapPin Touch Detect
-                            case 6:
-                                MapDescriptionShower.BuildingName = hit.transform.parent.name;
+                                case 6:
+                                    MapDescriptionShower.BuildingName = hit.transform.parent.name;
 
-                                if (MapDescriptionShower.BuildingStartIndex > -1)
-                                    guiManager.MapState = GUIManager.MapUIState.InfoPanelOn;
+                                    if (MapDescriptionShower.BuildingStartIndex > -1)
+                                        guiManager.MapState = GUIManager.MapUIState.InfoPanelOn;
 
-                                MapDescriptionShower.BuildingStartIndex = -1;
-                                break;
-                            #endregion
+                                    MapDescriptionShower.BuildingStartIndex = -1;
+                                    break;
+                    #endregion
 
                             #region Npc Touch Detect
-                            case 7:
-                                Npc npc = hit.transform.GetComponent<Npc>();
+                                case 7:
+                                    Npc npc = hit.transform.GetComponent<Npc>();
 
-                                if (npc.IsTouchable)
-                                {
-                                    //npc is clicked once
-                                    if (recentClickedNpc != npc)
+                                    if (npc.IsTouchable)
                                     {
-                                        cancleNpcClick();
+                                        //npc is clicked once
+                                        if (recentClickedNpc != npc)
+                                        {
+                                            cancleNpcClick();
 
-                                        recentClickedNpc = npc;
-                                        recentClickedNpc.ClickedOnce();
+                                            recentClickedNpc = npc;
+                                            recentClickedNpc.ClickedOnce();
 
-                                        Debug.Log(recentClickedNpc + " clicked");
+                                            Debug.Log(recentClickedNpc + " clicked");
+                                        }
+                                        //npc is clicked twice
+                                        else
+                                        {
+                                            recentClickedNpc.ClickedTwice();
+
+                                            Debug.Log(recentClickedNpc + " double clicked");
+                                        }
                                     }
-                                    //npc is clicked twice
-                                    else
-                                    {
-                                        recentClickedNpc.ClickedTwice();
+                                    break;
 
-                                        Debug.Log(recentClickedNpc + " double clicked");
-                                    }
-                                }
-                                break;
+                                default:
+                                    cancleNpcClick();
 
-                            default:
-                                cancleNpcClick();
-
-                                break;
-                                #endregion
+                                    break;
+            #endregion
+                            }
                         }
                     }
-                }
-            */
-                #endregion
-            
-                
-                #region PCTouch
-                if(guiManager.MapState != GUIManager.MapUIState.InfoPanelOn)
+
+
+#else
+            if (guiManager.MapState != GUIManager.MapUIState.InfoPanelOn)
 			    {
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -115,7 +112,7 @@ public class TouchOnScreen : MonoBehaviour
                         if (Physics.Raycast(ray, out hit))
                         {
 						    switch (hit.transform.gameObject.layer){
-							    #region MapPin Touch Detect
+                            #region MapPin Touch Detect
 							    case 6:
                                     MapDescriptionShower.BuildingName = hit.transform.parent.name;
 
@@ -124,9 +121,9 @@ public class TouchOnScreen : MonoBehaviour
 
                                     MapDescriptionShower.BuildingStartIndex = -1;
                                     break;
-							    #endregion
+            #endregion
 
-							    #region Npc Touch Detect
+                            #region Npc Touch Detect
 							    case 7:
                                     Npc npc = hit.transform.GetComponent<Npc>();
 
@@ -156,7 +153,7 @@ public class TouchOnScreen : MonoBehaviour
                                     cancleNpcClick();
 
                                     break;
-							    #endregion
+            #endregion
 						    }
 					    }
                         else
@@ -165,16 +162,15 @@ public class TouchOnScreen : MonoBehaviour
                         }
 				    }
                 }
-                #endregion
-                        
-            }
+#endif   
+        }
 	    }
 
-	#endregion
+#endregion
 
 
 
-	#region Necessary Methods
+#region Necessary Methods
 
 	    void cancleNpcClick()
         {
@@ -187,6 +183,6 @@ public class TouchOnScreen : MonoBehaviour
             }
         }
 
-	#endregion
+#endregion
 }
 

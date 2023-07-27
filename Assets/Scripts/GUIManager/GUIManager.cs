@@ -18,7 +18,8 @@ public class GUIManager : MonoBehaviour
 		public enum State
 		{
 			UsualState,
-			MapState
+			MapState,
+			GameState
 		};
 
 
@@ -54,11 +55,18 @@ public class GUIManager : MonoBehaviour
 					case State.UsualState:
 						uiStateList[0].SetActive(true);
 						uiStateList[1].SetActive(false);
+						uiStateList[2].SetActive(false);
+						mainCamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
 						break;
 					case State.MapState:
 						uiStateList[1].SetActive(true);
 						uiStateList[0].SetActive(false);
 						MapState = MapUIState.MapOpened;
+						mainCamMover.CurrentMode = MainCamMoving.CameraMode.TopViewMode;
+						break;
+					case State.GameState:
+						uiStateList[2].SetActive(true);
+						uiStateList[0].SetActive(false);
 						mainCamMover.CurrentMode = MainCamMoving.CameraMode.TopViewMode;
 						break;
 				}
@@ -134,7 +142,6 @@ public class GUIManager : MonoBehaviour
 			{
 				case MapUIState.MapOpened:
 					/* Close the Map And Change Cam to Usual*/
-					mainCamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
 					UIState = State.UsualState;
 					break;
 				case MapUIState.MapSearchOn:

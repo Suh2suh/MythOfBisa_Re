@@ -8,10 +8,16 @@ public class SaveData
 	public string playerName;
 	public int questNum;
 
-	public SaveData(string playerName, int questNum)
+	//미니게임용 -> 삭제 가능
+	public int highScore;
+
+	public SaveData(string playerName, int questNum, int highScore)
 	{
 		this.playerName = playerName;
 		this.questNum = questNum;
+
+		//미니게임용 -> 삭제 가능
+		this.highScore = highScore;
 	}
 }
 

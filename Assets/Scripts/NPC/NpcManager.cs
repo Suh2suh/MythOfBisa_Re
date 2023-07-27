@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NpcManager : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class NpcManager : MonoBehaviour
 
 		public Transform playerPos;
 
-		List<Key> CurrentActiveKeys;
+		//List<Key> CurrentActiveKeys;
 		Key currentQuestKey;
 
 		List<GameObject> activeNpcs;
@@ -55,11 +56,11 @@ public class NpcManager : MonoBehaviour
 		}
 
 		[SerializeField]
-		float minDistance = 20.0f;
+		float npcTouchableDistance = 20.0f;
 		[SerializeField]
-		float maxDistance = 100.0f;
+		float npcDeleteDistance = 100.0f;
 		[SerializeField]
-		float nametagDistance = 35.0f;
+		float nameTagDistance = 35.0f;
 
 
 		bool isNpcActivated;
@@ -90,7 +91,7 @@ public class NpcManager : MonoBehaviour
 	private void Awake()
 		{
 			activeNpcs = new List<GameObject>();
-			CurrentActiveKeys = new List<Key>();
+			//CurrentActiveKeys = new List<Key>();
 		}
 	#endregion
 
@@ -101,29 +102,54 @@ public class NpcManager : MonoBehaviour
 	#region Spawn Npc  
 
 
-	void Start()
-    {
+	#region FindRightSpawnPosNActiveNpc()를 씬이 로딩될 때마다 호출
+
+	/// <summary>
+	/// 과거에는 씬마다 호출되는 함수를 관리하기 위해 OnSceneLoaded()를 사용했었지만,
+	/// 최근에는 OnSceneLoaded Delegate Chain을 통해 관리하는 것을 권장
+	/// </summary>
+	/// 
+	void OnEnable()
+	{
+		// 씬 매니저의 sceneLoaded에 체인을 건다.
+		SceneManager.sceneLoaded += OnSceneLoaded;
+	}
+
+	// 체인을 걸어서 이 함수는 매 씬마다 호출된다.
+	void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+	{
+		Debug.Log("OnSceneLoaded: " + scene.name);
 		FindRightSpawnPosNActiveNpc();
 	}
 
+	void OnDisable()
+	{
+		SceneManager.sceneLoaded -= OnSceneLoaded;
+	}
+	#endregion
 
 	public void FindRightSpawnPosNActiveNpc()
 	{
 		int questNum = DataManager.Instance.questNum;
 
+		//TODO: 굳이 if/else 없어도 됨 -> DataManager에서 Save 시 예외처리 되어있음
+		//            삭제해도 될 지 체크
 		if(questNum <= DataManager.maxQuestNum)
-		if (questNum <= 8)
 		{
 			foreach (var key in npcDictionary.Keys)
 			{
 				if (key.questNum == questNum)
 				{
 					currentQuestKey = key;
-					CurrentActiveKeys.Add(currentQuestKey);
+					//CurrentActiveKeys.Add(currentQuestKey);
 				}
 			}
 
 			SpawnNpc();
+		}
+		else
+		{
+			Debug.Log("퀘스트 키가 유효하지 않음: MaxQuestNum 초과");
 		}
 	}
 
@@ -160,45 +186,20 @@ public class NpcManager : MonoBehaviour
 		float distance;
 		Vector3 NpcPos;
 
-		do
+		//do / while(isNPCActivated) -> 수정, 문제 생길 시 기존처럼 바꿀 것
+		while (isNpcActivated)
 		{
 			for (int i = 0; i < ActiveNpcs.Count; i++)
 			{
-				if(GameManager.currentGameMode == GameManager.GameMode.FieldMode)
+				if (GameManager.currentGameMode == GameManager.GameMode.FieldMode)
 				{
-					//Debug.Log(ActiveNpcs[i].transform.name);
+					Debug.Log(ActiveNpcs[i].transform.name);
 
 					NpcPos = ActiveNpcs[i].transform.position;
 					distance = Vector3.Distance(playerPos.position, NpcPos);
 
-					//최근 npc면 -> 대화 체크
-					if (i == ActiveNpcs.Count - 1)
-					{
-						Npc recentActiveNpc = ActiveNpcs[i].GetComponentInChildren<Npc>();
-
-						if (distance < minDistance)
-						{
-							if (!recentActiveNpc.IsTouchable)
-								recentActiveNpc.IsTouchable = true;
-						}
-						else if (distance > minDistance)
-						{
-							if (recentActiveNpc.IsTouchable)
-								recentActiveNpc.IsTouchable = false;
-						}
-					}
-					//이미 쓰인 npc -> 멀어지면 삭제
-					else
-					{
-						if (distance > maxDistance)
-						{
-							ActiveNpcs[i].SetActive(false);
-							ActiveNpcs.RemoveAt(i);
-						}
-					}
-
-					//공통 -> 명찰 see unsee
-					if (distance < nametagDistance)
+					//전체 NPC 공통 -> 명찰 see unsee
+					if (distance < nameTagDistance)
 					{
 						//Debug.Log(ActiveNpcs[i].name + " 명찰 거리");
 
@@ -216,11 +217,39 @@ public class NpcManager : MonoBehaviour
 
 						NameTagManager.InactiveNametag(nameTagTransform);
 					}
+
+					//최근 npc면 -> 대화 체크
+					if (i == ActiveNpcs.Count - 1)
+					{
+						Npc recentActiveNpc = ActiveNpcs[i].GetComponentInChildren<Npc>();
+
+						if (distance > npcTouchableDistance)
+						{
+							if (recentActiveNpc.IsTouchable)
+								recentActiveNpc.IsTouchable = false;
+						}
+						else
+						{
+							if (!recentActiveNpc.IsTouchable)
+								recentActiveNpc.IsTouchable = true;
+						}
+					}
+					//이미 쓰인 npc -> 멀어지면 삭제
+					else
+					{
+						if (distance > npcDeleteDistance)
+						{
+							ActiveNpcs[i].SetActive(false);
+							ActiveNpcs.RemoveAt(i);
+						}
+					}
+
 				}
+
 				yield return new WaitForSecondsRealtime(0.5f);
 			}
+		}
 
-		} while (isNpcActivated);
 
 		yield return null;
 	}
@@ -229,11 +258,16 @@ public class NpcManager : MonoBehaviour
 
 
 	#region Start Dialogue of Npc
+	//NPC가 두 번 클릭됐을 때, 대화 시작
+	//다이얼로그 매니저로 옮겨도 괜찮을 듯
 	public void StartDialogue(Transform npcHead, int questNum)
 	{
 		CamMover.WatchNpc(npcHead);
 		DialogueManager.StartDialogue(questNum);
 	}
+
+	//대화 끝낼 때, 카메라를 플레이어 모드로 복귀
+	//카메라 매니저로 옮겨도 괜찮을 듯
 	public void SpawnNextNpcNWatchPlayer()
 	{
 		IsNpcActivated = false;

@@ -24,8 +24,8 @@ public class DialogueManager : MonoBehaviour
         public TextMeshProUGUI DialogueMainText;
 
 
-        [SerializeField]
-        GameObject QuestGenerator;
+        //[SerializeField]
+        //GameObject QuestGenerator;
         [SerializeField]
         NpcManager NpcManager;
         [SerializeField]
@@ -34,11 +34,11 @@ public class DialogueManager : MonoBehaviour
     [SerializeField]
         float TalkingSpeed = 0.05f;
 
-        List<int> EventStartPageNums;
-        List<int> SelectStartPageNums;
+        List<int> EventStartPages;
+        List<int> SelectStartPages;
 
-        int questNum;
-        int finalEventNum;
+        //int questNum;
+        int finalChapter;
 
         string playerName;
 
@@ -47,25 +47,32 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
+        Initialize();
+    }
+
+    void Initialize()
+    {
         MainDialogue = CSVReader.Read("Kor_Dialogue_MythOfBisa_CSV");
         SelectDialogue = CSVReader.Read("Kor_SelectEvent_MythOfBisa_CSV");
 
-        EventStartPageNums = new List<int>();
-        SelectStartPageNums = new List<int>();
-        finalEventNum = int.Parse(MainDialogue[MainDialogue.Count - 2]["EventNum"].ToString());
+        EventStartPages = new List<int>();
+        SelectStartPages = new List<int>();
+        finalChapter = int.Parse(MainDialogue[MainDialogue.Count - 2]["EventNum"].ToString());
 
         for (int page = 0; page < MainDialogue.Count; page++)
-		{
-            if(MainDialogue[page]["PageNum"].ToString() == "0")
+        {
+            //퀘스트 별로 시작 페이지를 EventStartPageNums에 저장
+            if (MainDialogue[page]["PageNum"].ToString() == "0")
             {
-                EventStartPageNums.Add(page);
+                EventStartPages.Add(page);
             }
-		}
+        }
         for (int page = 0; page < SelectDialogue.Count; page++)
         {
+            //선택 분기 별 시작 페이지를 SelectStartPageNums에 저장
             if (SelectDialogue[page]["SelectEvent"].ToString() != "")
             {
-                SelectStartPageNums.Add(page);
+                SelectStartPages.Add(page);
             }
         }
 
@@ -75,22 +82,29 @@ public class DialogueManager : MonoBehaviour
     #endregion
 
 
-    int pageNum;
-    int eventEndNum;
+
+    int currentDialoguePage;
+
+    /// <summary>
+    /// 현재 퀘스트 다이얼로그가 끝나는 페이지
+    /// </summary>
+    int eventEndPage;
 
     #region Start/End Dialogue 
-    public void StartDialogue(int questNum)
+    public void StartDialogue(int QuestNum)
 	{
-        if(questNum <= finalEventNum)
+        int Chapter = QuestNum;
+
+        if(Chapter <= finalChapter)
 		{
             GameManager.currentGameMode = GameManager.GameMode.DialogueMode;
-            this.questNum = questNum;
-            pageNum = EventStartPageNums[questNum];
+            //questNum = QuestNum;
+            currentDialoguePage = EventStartPages[Chapter];
 
-            if (questNum < finalEventNum)
-                eventEndNum = EventStartPageNums[questNum + 1] - 1;
+            if (Chapter < finalChapter)
+                eventEndPage = EventStartPages[Chapter + 1] - 1;
             else
-                eventEndNum = MainDialogue.Count - 1;
+                eventEndPage = MainDialogue.Count - 1;
 
             DialogueFolder.SetActive(true);
 
@@ -117,12 +131,12 @@ public class DialogueManager : MonoBehaviour
 	{
         clickedNum = 0;
         isTextChangeDone = false;
-        isSelectEvent = (MainDialogue[pageNum]["SelectEvent"].ToString() != "");
+        isSelectEvent = (MainDialogue[currentDialoguePage]["SelectEvent"].ToString() != "");
 
         //Debug.Log(pageNum);
 
         //eventEndNum = 이벤트 이후 공백 넘버까지
-        if (pageNum < eventEndNum)
+        if (currentDialoguePage < eventEndPage)
 		{
             ChangeNameText();
             ChangeMainText();
@@ -135,7 +149,7 @@ public class DialogueManager : MonoBehaviour
 
     void ChangeNameText()
 	{
-        string name = MainDialogue[pageNum]["Name"].ToString();
+        string name = MainDialogue[currentDialoguePage]["Name"].ToString();
         
         switch (name)
 		{
@@ -159,7 +173,7 @@ public class DialogueManager : MonoBehaviour
 
     void ChangeMainText()
 	{
-        string content = MainDialogue[pageNum]["Dialogue"].ToString();
+        string content = MainDialogue[currentDialoguePage]["Dialogue"].ToString();
 
         //ReplaceAll 아니라 Replace지만 다 바뀜
         if (content.Contains("player"))
@@ -203,7 +217,7 @@ public class DialogueManager : MonoBehaviour
         {
             if (!isSelectEvent)
             {
-                pageNum++;
+                currentDialoguePage++;
                 ChangeDialogueText();
             }
             else
@@ -228,8 +242,8 @@ public class DialogueManager : MonoBehaviour
 	{
         SelectPanel.SetActive(true);
 
-        var currentSelectEvent = int.Parse(MainDialogue[pageNum]["SelectEvent"].ToString());
-        selectEventPage = SelectStartPageNums[currentSelectEvent];
+        var currentSelectEvent = int.Parse(MainDialogue[currentDialoguePage]["SelectEvent"].ToString());
+        selectEventPage = SelectStartPages[currentSelectEvent];
 
         SelectText1.text = SelectDialogue[selectEventPage]["SelectText"].ToString();
         SelectText2.text = SelectDialogue[selectEventPage + 1]["SelectText"].ToString();
@@ -240,10 +254,10 @@ public class DialogueManager : MonoBehaviour
         switch (order)
 		{
             case 0:
-                pageNum = int.Parse(SelectDialogue[selectEventPage]["BackToDialogue"].ToString());
+                currentDialoguePage = int.Parse(SelectDialogue[selectEventPage]["BackToDialogue"].ToString());
                 break;
             case 1:
-                pageNum = int.Parse(SelectDialogue[selectEventPage + 1]["BackToDialogue"].ToString());
+                currentDialoguePage = int.Parse(SelectDialogue[selectEventPage + 1]["BackToDialogue"].ToString());
                 break;
         }
 

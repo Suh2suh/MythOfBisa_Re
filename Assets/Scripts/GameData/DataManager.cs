@@ -35,7 +35,7 @@ public class DataManager : MonoBehaviour
 		//Save Initial PlayerData if player is new (doesn't have a save file)
 		if (playerData == null)
 		{
-			playerData = new SaveData("???", 0);
+			playerData = new SaveData("캐롤", 0, 0);
 			SaveSystem.Save(playerData, saveFileName);
 		}
 
@@ -76,6 +76,13 @@ public class DataManager : MonoBehaviour
 		}
 	}
 
+	public int highScore
+	{
+		get
+		{
+			return playerData.highScore;
+		}
+	}
 
 	#endregion
 
@@ -86,7 +93,7 @@ public class DataManager : MonoBehaviour
 
 	public void ChangePlayerName(string playerName)
 	{
-		SaveData newData = new SaveData(playerName, playerData.questNum);
+		SaveData newData = new SaveData(playerData.playerName, questNum, highScore);
 		SaveSystem.Save(newData, saveFileName);
 
 		loadPlayerData();
@@ -95,7 +102,16 @@ public class DataManager : MonoBehaviour
 
 	public void ChangePlayerQuestNum(int questNum)
 	{
-		SaveData newData = new SaveData(playerData.playerName, questNum);
+		SaveData newData = new SaveData(playerData.playerName, Mathf.Clamp(questNum, 0, maxQuestNum), highScore);
+		SaveSystem.Save(newData, saveFileName);
+
+		loadPlayerData();
+		printPlayerData();
+	}
+
+	public void ChangeHighScore(int score)
+	{
+		SaveData newData = new SaveData(playerData.playerName, questNum, score);
 		SaveSystem.Save(newData, saveFileName);
 
 		loadPlayerData();
@@ -131,13 +147,15 @@ public class DataManager : MonoBehaviour
 	void printPlayerData()
 	{
 		Debug.Log(playerData.playerName + ": Now doing Quest." + playerData.questNum);
+		Debug.Log(playerData.highScore + "점이 최고");
 	}
 
 	[ContextMenu("ResetGameData")]
 	void ResetGameData()
 	{
-		ChangePlayerName("");
+		ChangePlayerName("캐롤");
 		ChangePlayerQuestNum(0);
+		ChangeHighScore(0);
 	}
 
 	[ContextMenu("CamTestWithBisa")]

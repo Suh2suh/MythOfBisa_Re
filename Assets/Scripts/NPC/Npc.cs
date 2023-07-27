@@ -60,6 +60,8 @@ public class Npc : MonoBehaviour
 			HideOutline();
 
 
+			//TODO: questNum -> 굳이 선언할 필요 X
+			//            StartDialogue() -> NPC 자체 선언하는 것 vs NPCManager에서 전체 관리
 			int questNum = DataManager.Instance.questNum;
 
 			Transform npcCameraHead = transform.Find("CameraHead");
@@ -86,4 +88,5 @@ public class Npc : MonoBehaviour
 		}
 
 	#endregion
+
 }

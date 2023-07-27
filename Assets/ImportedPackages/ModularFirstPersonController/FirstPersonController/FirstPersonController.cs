@@ -65,7 +65,7 @@ public class FirstPersonController : MonoBehaviour
 
     #region Sprint
 
-    public bool enableSprint = true;
+    public bool enableSprint = false;
     public bool unlimitedSprint = false;
     public KeyCode sprintKey = KeyCode.LeftShift;
     public float sprintSpeed = 7f;
@@ -164,7 +164,7 @@ public class FirstPersonController : MonoBehaviour
         }
         else
         {
-            crosshairObject.gameObject.SetActive(false);
+            //crosshairObject.gameObject.SetActive(false);
         }
 
         #region Sprint Bar
@@ -438,7 +438,7 @@ public class FirstPersonController : MonoBehaviour
 
                     if (hideBarWhenFull && sprintRemaining == sprintDuration)
                     {
-                        sprintBarCG.alpha -= 3 * Time.deltaTime;
+                        //sprintBarCG.alpha -= 3 * Time.deltaTime;
                     }
 
                     targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
