@@ -17,7 +17,7 @@ public class DialogueManager : MonoBehaviour
 
         //public GameObject SelectEventPanel;
 
-        public GameObject DialogueFolder;
+        //public GameObject DialogueFolder;
         public GameObject DialogueNameBox;
 
         public TextMeshProUGUI DialogueNameText;
@@ -30,8 +30,10 @@ public class DialogueManager : MonoBehaviour
         NpcManager NpcManager;
         [SerializeField]
         DataManager DataManager;
+        [SerializeField]
+        GUIManager GUIManager;
 
-    [SerializeField]
+        [SerializeField]
         float TalkingSpeed = 0.05f;
 
         List<int> EventStartPages;
@@ -88,7 +90,7 @@ public class DialogueManager : MonoBehaviour
     /// <summary>
     /// 현재 퀘스트 다이얼로그가 끝나는 페이지
     /// </summary>
-    int eventEndPage;
+    int chapterFInalPage;
 
     #region Start/End Dialogue 
     public void StartDialogue(int QuestNum)
@@ -102,21 +104,29 @@ public class DialogueManager : MonoBehaviour
             currentDialoguePage = EventStartPages[Chapter];
 
             if (Chapter < finalChapter)
-                eventEndPage = EventStartPages[Chapter + 1] - 1;
+                chapterFInalPage = EventStartPages[Chapter + 1] - 1;
             else
-                eventEndPage = MainDialogue.Count - 1;
+                chapterFInalPage = MainDialogue.Count - 1;
 
-            DialogueFolder.SetActive(true);
+
+            //DialogueFolder.SetActive(true);
+            GUIManager.SetUIState(GUIManager.State.DialogueState);
 
             ChangeDialogueText();
         }
+        else
+		{
+            Debug.Log("ERROR: Chapter 번호가 FinalChapter를 초과함");
+		}
     }
 
     void EndDialogue()
 	{
         DataManager.Instance.plusPlayerQuestNum();
 
-        DialogueFolder.SetActive(false);
+        //DialogueFolder.SetActive(false);
+        GUIManager.SetUIState(GUIManager.State.UsualState);
+
         NpcManager.SpawnNextNpcNWatchPlayer();
     }
     #endregion
@@ -136,7 +146,7 @@ public class DialogueManager : MonoBehaviour
         //Debug.Log(pageNum);
 
         //eventEndNum = 이벤트 이후 공백 넘버까지
-        if (currentDialoguePage < eventEndPage)
+        if (currentDialoguePage < chapterFInalPage)
 		{
             ChangeNameText();
             ChangeMainText();
@@ -232,15 +242,16 @@ public class DialogueManager : MonoBehaviour
 
     #region SelectEvent Maker
 
-    [SerializeField]
-    GameObject SelectPanel;
+    //[SerializeField]
+    //GameObject SelectPanel;
 
     public TextMeshProUGUI SelectText1;
     public TextMeshProUGUI SelectText2;
     int selectEventPage;
     void MakeSelectEvent()
 	{
-        SelectPanel.SetActive(true);
+        //SelectPanel.SetActive(true);
+        GUIManager.SetDialogueState(GUIManager.DialogueUIState.SelectEvent);
 
         var currentSelectEvent = int.Parse(MainDialogue[currentDialoguePage]["SelectEvent"].ToString());
         selectEventPage = SelectStartPages[currentSelectEvent];
@@ -261,7 +272,8 @@ public class DialogueManager : MonoBehaviour
                 break;
         }
 
-        SelectPanel.SetActive(false);
+        //SelectPanel.SetActive(false);
+        GUIManager.SetDialogueState(GUIManager.DialogueUIState.Usual);
         ChangeDialogueText();
     }
 

@@ -12,18 +12,14 @@ public class GUIManager : MonoBehaviour
 		public MainCamMoving mainCamMover;
 
 
-		public List<GameObject> uiStateList;
-
 		[Serializable]
 		public enum State
 		{
 			UsualState,
 			MapState,
-			GameState
+			GameState,
+			DialogueState
 		};
-
-
-		public List<GameObject> mapUiList;
 
 		[Serializable]
 		public enum MapUIState
@@ -34,12 +30,49 @@ public class GUIManager : MonoBehaviour
 			InfoPanelOn
 		};
 
+		public enum DialogueUIState
+		{
+			Usual,
+			SelectEvent
+		};
+
+
+		public uiStateList UIStateList;
+		[Serializable]
+		public struct uiStateList
+		{
+			public GameObject UsualStateGUI;
+			public GameObject MapStateGUI;
+			public GameObject GameStateGUI;
+			public GameObject DialogueStateGUI;
+
+		}
+
+		public mapUIList MapUIList;
+		[Serializable]
+		public struct mapUIList
+		{
+			public GameObject OnSearchBtn;
+			public GameObject BackBtnInMap;
+			public GameObject SearchBtn;
+			public GameObject MapDescriptionPanel;
+
+		}
+
+		public dialogueUIList DialogueUIList;
+		[Serializable]
+		public struct dialogueUIList
+		{
+			public GameObject SelectEventPanel;
+
+		}
+
 	#endregion
 
 
 	#region Game UI State
 
-		State uiState;
+	State uiState;
 		public State UIState
 		{
 			get
@@ -53,23 +86,36 @@ public class GUIManager : MonoBehaviour
 				switch (uiState)
 				{
 					case State.UsualState:
-						uiStateList[0].SetActive(true);
-						uiStateList[1].SetActive(false);
-						uiStateList[2].SetActive(false);
+						UIStateList.UsualStateGUI.SetActive(true);
+						UIStateList.MapStateGUI.SetActive(false);
+						UIStateList.GameStateGUI.SetActive(false);
+						UIStateList.DialogueStateGUI.SetActive(false);
+
 						mainCamMover.CurrentMode = MainCamMoving.CameraMode.PlayerViewMode;
 						break;
+
 					case State.MapState:
-						uiStateList[1].SetActive(true);
-						uiStateList[0].SetActive(false);
+						UIStateList.MapStateGUI.SetActive(true);
+						UIStateList.UsualStateGUI.SetActive(false);
+
 						MapState = MapUIState.MapOpened;
+
 						mainCamMover.CurrentMode = MainCamMoving.CameraMode.TopViewMode;
 						break;
+
 					case State.GameState:
-						uiStateList[2].SetActive(true);
-						uiStateList[0].SetActive(false);
+						UIStateList.GameStateGUI.SetActive(true);
+						UIStateList.UsualStateGUI.SetActive(false);
+
 						mainCamMover.CurrentMode = MainCamMoving.CameraMode.TopViewMode;
 						break;
-				}
+
+					case State.DialogueState:
+						UIStateList.DialogueStateGUI.SetActive(true);
+						UIStateList.UsualStateGUI.SetActive(false);
+
+						break;
+			}
 			}
 		}
 
@@ -94,25 +140,25 @@ public class GUIManager : MonoBehaviour
 				{
 					case MapUIState.MapOpened:
 						/* Map is just Opened */
-						mapUiList[0].SetActive(true);
-						mapUiList[2].SetActive(false);
+						MapUIList.OnSearchBtn.SetActive(true);
+						MapUIList.SearchBtn.SetActive(false);
 						break;
 					case MapUIState.MapSearchOn:
 						/* SearchOnBtn Clicked */
-						mapUiList[2].SetActive(true);
-						mapUiList[0].SetActive(false);
-						break;
+						MapUIList.SearchBtn.SetActive(true);
+						MapUIList.OnSearchBtn.SetActive(false);
+					break;
 					case MapUIState.MapPinOn:
 						/* One of SearchBtns Clicked */
 						//MapPins are On
-						mapUiList[2].SetActive(false);
-						mapUiList[3].SetActive(false);
-						break;
+						MapUIList.SearchBtn.SetActive(false);
+						MapUIList.MapDescriptionPanel.SetActive(false);
+					break;
 					case MapUIState.InfoPanelOn:
 						/* One of MapPins Clicked */
 						//InfoPanel is On
-						mapUiList[3].SetActive(true);
-						break;
+						MapUIList.MapDescriptionPanel.SetActive(true);
+					break;
 					default:
 						Debug.Log("Please Check the MapStage Value before setting it");
 						break;
@@ -123,47 +169,99 @@ public class GUIManager : MonoBehaviour
 	#endregion
 
 
-	#region UI State Methods
+	#region Dialogue State
 
-		public void SetUIState(GUIStateComponent StateComponent)
+		DialogueUIState dialogueState;
+		public DialogueUIState DialogueState
 		{
-			if(!mainCamMover.IsCameraConvertingOn)
-				UIState = StateComponent.State;
-		}
-		public void SetMapState(GUIStateComponent StateComponent)
-		{
-			if (!mainCamMover.IsCameraConvertingOn)
-				MapState = StateComponent.MapUIState;
-		}
-
-		public void BackInMap()
-		{
-			switch(mapState)
+			get
 			{
-				case MapUIState.MapOpened:
-					/* Close the Map And Change Cam to Usual*/
-					UIState = State.UsualState;
-					break;
-				case MapUIState.MapSearchOn:
-					/* Close SearchBtns */
-					MapState = MapUIState.MapOpened;
-					break;
-				case MapUIState.MapPinOn:
-					/* One of SearchBtns Clicked */
-					mapPinManager.TakePinOffAll();
-					MapState = MapUIState.MapSearchOn;
-					break;
-				case MapUIState.InfoPanelOn:
-					/* One of MapPins Clicked */
-					//Off Panels
-					MapState = MapUIState.MapPinOn;
-					break;
-				default:
-					Debug.Log("Please Check the MapStage Value before setting it");
-					break;
+				return dialogueState;
+			}
+			set
+			{
+				dialogueState = value;
+
+				switch (dialogueState)
+				{
+					case DialogueUIState.Usual:
+						DialogueUIList.SelectEventPanel.SetActive(false);
+						break;
+					case DialogueUIState.SelectEvent:
+						DialogueUIList.SelectEventPanel.SetActive(true);
+						break;
+					default:
+						Debug.Log("DialogueStateError");
+						break;
+				}
 			}
 		}
 
 	#endregion
+
+	#region UI State Methods
+
+		#region For Button in Inspector
+
+			public void SetUIState(GUIStateComponent StateComponent)
+				{
+					if(!mainCamMover.IsCameraConvertingOn)
+						UIState = StateComponent.State;
+				}
+
+				public void SetMapState(GUIStateComponent StateComponent)
+				{
+					//if (!mainCamMover.IsCameraConvertingOn)
+						MapState = StateComponent.MapUIState;
+				}
+
+				public void BackInMap()
+				{
+					switch(mapState)
+					{
+						case MapUIState.MapOpened:
+							/* Close the Map And Change Cam to Usual*/
+							UIState = State.UsualState;
+							break;
+						case MapUIState.MapSearchOn:
+							/* Close SearchBtns */
+							MapState = MapUIState.MapOpened;
+							break;
+						case MapUIState.MapPinOn:
+							/* One of SearchBtns Clicked */
+							mapPinManager.TakePinOffAll();
+							MapState = MapUIState.MapSearchOn;
+							break;
+						case MapUIState.InfoPanelOn:
+							/* One of MapPins Clicked */
+							//Off Panels
+							MapState = MapUIState.MapPinOn;
+							break;
+						default:
+							Debug.Log("Please Check the MapStage Value before setting it");
+							break;
+					}
+				}
+
+	#endregion
+
+
+		public void SetUIState(State NewState)
+		{
+			if (!mainCamMover.IsCameraConvertingOn)
+				UIState = NewState;
+		}
+
+		public void SetDialogueState(DialogueUIState NewDialogueState)
+		{
+			if (UIState == State.DialogueState)
+			{
+				DialogueState = NewDialogueState;
+			}
+		}
+
+	#endregion
+
+
 
 }

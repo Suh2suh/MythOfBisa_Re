@@ -60,7 +60,7 @@ public class NpcManager : MonoBehaviour
 		[SerializeField]
 		float npcDeleteDistance = 100.0f;
 		[SerializeField]
-		float nameTagDistance = 35.0f;
+		float nameTagOnDistance = 35.0f;
 
 
 		bool isNpcActivated;
@@ -199,7 +199,7 @@ public class NpcManager : MonoBehaviour
 					distance = Vector3.Distance(playerPos.position, NpcPos);
 
 					//전체 NPC 공통 -> 명찰 see unsee
-					if (distance < nameTagDistance)
+					if (distance < nameTagOnDistance)
 					{
 						//Debug.Log(ActiveNpcs[i].name + " 명찰 거리");
 
@@ -263,6 +263,8 @@ public class NpcManager : MonoBehaviour
 	public void StartDialogue(Transform npcHead, int questNum)
 	{
 		CamMover.WatchNpc(npcHead);
+
+		//TODO: Couroutine으로 지속적으로 WatchNPC 끝났는지 체크, 이후 Start Dialouge OR Delegate 사용해보기
 		DialogueManager.StartDialogue(questNum);
 	}
 
