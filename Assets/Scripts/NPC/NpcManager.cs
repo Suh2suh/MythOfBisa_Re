@@ -32,7 +32,7 @@ public class NpcManager : MonoBehaviour
 		[Serializable]
 		public class Value
 		{
-			public Transform spawnPos;
+			public Transform npcSpawnPos;
 
 			public GameObject npc;
 		}
@@ -155,26 +155,29 @@ public class NpcManager : MonoBehaviour
 
 	void SpawnNpc()
 	{
-		Vector3 spawnPos;
-		string spawnPosName = npcDictionary[currentQuestKey].spawnPos.gameObject.name;
+		Value currentQuest = npcDictionary[currentQuestKey];
+		string spawnPosName = currentQuest.npcSpawnPos.gameObject.name;
 
-		if(spawnPosName == "NearPlayer")
+		Vector3 spawnPos;
+
+		if (spawnPosName == "NearPlayer")
 		{
 			Vector3 nearPlayerPos = playerPos.position + playerPos.forward * 10;
 			spawnPos = new Vector3(nearPlayerPos.x, 10, nearPlayerPos.z);
 		}
 		else
 		{
-			spawnPos = npcDictionary[currentQuestKey].spawnPos.transform.position;
+			spawnPos = currentQuest.npcSpawnPos.transform.position;
 		}
 
-		GameObject spawnedNpc = Instantiate(npcDictionary[currentQuestKey].npc, spawnPos, npcDictionary[currentQuestKey].spawnPos.rotation, npcDictionary[currentQuestKey].spawnPos.transform) as GameObject;
+		GameObject spawnedNpc = Instantiate(currentQuest.npc, spawnPos, currentQuest.npcSpawnPos.rotation,
+			                                                            currentQuest.npcSpawnPos.transform) as GameObject;
 		ActiveNpcs.Add(spawnedNpc);
 
+
+		//Debug.Log("NPC Spawned");
 		IsNpcActivated = true;
 
-
-		Debug.Log("Spawned NPC");
 	}
 	#endregion
 
@@ -185,38 +188,27 @@ public class NpcManager : MonoBehaviour
 	{
 		float distance;
 		Vector3 NpcPos;
+		Transform nameTagTransform;
 
-		//do / while(isNPCActivated) -> 수정, 문제 생길 시 기존처럼 바꿀 것
+
 		while (isNpcActivated)
 		{
 			for (int i = 0; i < ActiveNpcs.Count; i++)
 			{
 				if (GameManager.currentGameMode == GameManager.GameMode.FieldMode)
 				{
-					Debug.Log(ActiveNpcs[i].transform.name);
-
 					NpcPos = ActiveNpcs[i].transform.position;
 					distance = Vector3.Distance(playerPos.position, NpcPos);
+					nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
 
-					//전체 NPC 공통 -> 명찰 see unsee
+
+					//활성화된 NPC 공통 -> 거리에 따른 명찰 ON/OFF
 					if (distance < nameTagOnDistance)
-					{
-						//Debug.Log(ActiveNpcs[i].name + " 명찰 거리");
-
-						var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
-						//Debug.Log(nameTagTransform);
-
-						//TODO: Send npc name by switch block check (not gameobject name)
-						NameTagManager.AddNpcHead(nameTagTransform, activeNpcs[i].name);
-					}
+						NameTagManager.ActivateNameTag(nameTagTransform, activeNpcs[i].name);
 					else
-					{
-						//Debug.Log(ActiveNpcs[i].name + " 명찰 해제");
+						NameTagManager.InActivateNameTag(nameTagTransform);
+					//TODO: Send npc name by switch block check (not gameobject name)
 
-						var nameTagTransform = ActiveNpcs[i].transform.Find("NpcTagHead");
-
-						NameTagManager.InactiveNametag(nameTagTransform);
-					}
 
 					//최근 npc면 -> 대화 체크
 					if (i == ActiveNpcs.Count - 1)
@@ -225,16 +217,14 @@ public class NpcManager : MonoBehaviour
 
 						if (distance > npcTouchableDistance)
 						{
-							if (recentActiveNpc.IsTouchable)
-								recentActiveNpc.IsTouchable = false;
+							if (recentActiveNpc.IsTouchable)		recentActiveNpc.IsTouchable = false;
 						}
 						else
 						{
-							if (!recentActiveNpc.IsTouchable)
-								recentActiveNpc.IsTouchable = true;
+							if (!recentActiveNpc.IsTouchable)	recentActiveNpc.IsTouchable = true;
 						}
 					}
-					//이미 쓰인 npc -> 멀어지면 삭제
+					//이미 쓰인 npc면 -> 멀어지면 삭제
 					else
 					{
 						if (distance > npcDeleteDistance)
